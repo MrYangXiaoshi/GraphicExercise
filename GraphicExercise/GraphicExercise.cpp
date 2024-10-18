@@ -3,6 +3,7 @@
 #include "ResizableRotateRectItem.h"
 #include "ResizableEllipseItem.h"
 #include "ResizablePolygonItem.h"
+#include "ResizableCircleItem.h"
 #include <QVBoxLayout>
 #include <QPushButton>
 
@@ -35,16 +36,27 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     QPushButton* buttonEllipse = new QPushButton("Ellipse", centralWidget);
     QPushButton* buttonPolygon = new QPushButton("Polygon", centralWidget);
 
+    QPushButton* buttonCircle = new QPushButton("Circle", centralWidget);
+    QPushButton* buttonRing = new QPushButton("Ring", centralWidget);
+    QPushButton* buttonCicularArc = new QPushButton("CicularArc", centralWidget);
+
     // 连接信号和槽
     connect(buttonRect, &QPushButton::clicked, this, &GraphicExercise::onButtonRectClicked);
     connect(buttonRotateRect, &QPushButton::clicked, this, &GraphicExercise::onButtonRotateRectClicked);
     connect(buttonEllipse, &QPushButton::clicked, this, &GraphicExercise::onButtonEllipseClicked);
     connect(buttonPolygon, &QPushButton::clicked, this, &GraphicExercise::onButtonPolygonClicked);
+    connect(buttonCircle, &QPushButton::clicked, this, &GraphicExercise::onButtonCircleClicked);
+    connect(buttonRing, &QPushButton::clicked, this, &GraphicExercise::onButtonRingClicked);
+    connect(buttonCicularArc, &QPushButton::clicked, this, &GraphicExercise::onButtonCicularArcClicked);
+
 
     buttonLayout->addWidget(buttonRect);
     buttonLayout->addWidget(buttonRotateRect);
     buttonLayout->addWidget(buttonEllipse);
     buttonLayout->addWidget(buttonPolygon);
+    buttonLayout->addWidget(buttonCircle);
+    buttonLayout->addWidget(buttonRing);
+    buttonLayout->addWidget(buttonCicularArc);
 
     layout->addLayout(buttonLayout);
 }
@@ -66,7 +78,7 @@ void GraphicExercise::onButtonRotateRectClicked() {
 
 void GraphicExercise::onButtonEllipseClicked() {
     scene.clear();
-    ResizableEllipseItem* ellipse = new ResizableEllipseItem(50, 50, 50, 50);
+    ResizableEllipseItem* ellipse = new ResizableEllipseItem(50, 50, 50, 100);
     scene.addItem(ellipse);
 }
 
@@ -75,3 +87,23 @@ void GraphicExercise::onButtonPolygonClicked() {
     ResizablePolygonItem* polygon = new ResizablePolygonItem();
     scene.addItem(polygon);
 }
+
+
+void GraphicExercise::onButtonCircleClicked()
+{
+    scene.clear();
+    ResizableCircleItem* circle = new ResizableCircleItem(50, 50, 50, 50);
+    scene.addItem(circle);
+}
+
+void GraphicExercise::onButtonRingClicked()
+{
+    scene.clear();
+
+}
+
+void GraphicExercise::onButtonCicularArcClicked()
+{
+    scene.clear();
+}
+

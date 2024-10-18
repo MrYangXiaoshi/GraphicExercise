@@ -25,4 +25,7 @@ private slots:
     void onButtonRotateRectClicked();
     void onButtonEllipseClicked();
     void onButtonPolygonClicked();
+    void onButtonRingClicked();
+    void onButtonCicularArcClicked();
+    void onButtonCircleClicked();
 };

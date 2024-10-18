@@ -4,7 +4,6 @@
 #include "ResizableEllipseItem.h"
 #include "ResizablePolygonItem.h"
 #include <QtWidgets/QApplication>
-#include <QTextCodec>
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);

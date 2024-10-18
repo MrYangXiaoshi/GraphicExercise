@@ -1,48 +1,38 @@
-#include "ResizablePolygonItem.h"
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QGraphicsItem>
-#include <QPainter>
+#include "ResizableRingItem.h"
 
-ResizablePolygonItem::ResizablePolygonItem()
+
+ResizableRingItem::ResizableRingItem()
 {
     setFlag(QGraphicsItem::ItemIsMovable);
     controlPoints.clear();
     unSetted = true;
-    
+
 }
 
-QRectF ResizablePolygonItem::boundingRect() const
+QRectF ResizableRingItem::boundingRect() const
 {
-    return polygon.boundingRect().adjusted(-400, -400, 400, 400);
+    return circleRect1.adjusted(-400, -400, 400, 400);
 }
 
-void ResizablePolygonItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void ResizableRingItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     QPen pen(Qt::green);
     pen.setWidth(3);
     painter->setPen(pen);
     painter->setBrush(QColor(155, 155, 155, 0));
-    //polygon << QPointF(0, 0) << QPointF(100, 0) << QPointF(100, 100) << QPointF(0, 100);
-    //updateControlPoints();
 
-    polygon.clear();
+    //polygon.clear();
     for (const auto& point : controlPoints) {
-        polygon << controlPoints;
+        //polygon << controlPoints;
         qDebug() << controlPoints;
     }
     //画出多边形
-    if (unSetted) {
-        painter->drawPolyline(controlPoints.data(), controlPoints.size());
-    }
-    else {
-        painter->drawPolygon(polygon);
-    }
-    
+    //painter->drawPolygon(polygon);
+
     ResizableItem::paint(painter, option, widget);
 }
 
-void ResizablePolygonItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+void ResizableRingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     //判断当前鼠标是否按压在控制点上
     if (resizing && revealPoint) {
@@ -54,9 +44,9 @@ void ResizablePolygonItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     }
 }
 
-void ResizablePolygonItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+void ResizableRingItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
-    
+
     if (unSetted) {
         if (!resizing) {
             controlPoints.append(event->pos());
@@ -72,14 +62,14 @@ void ResizablePolygonItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     }
 }
 
-void ResizablePolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void ResizableRingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (unSetted) {
         if (!resizing) {
             controlPoints.append(event->pos());
         }
         else if (QRectF(controlPoints[0].x() - 3, controlPoints[0].y() - 3, 6, 6).contains(event->pos())) {
-            //controlPoints.append(controlPoints[0]);//最后的点不需要append，以第一个点为终点
+            controlPoints.append(controlPoints[0]);
             unSetted = false;
         }
         else {
@@ -91,9 +81,9 @@ void ResizablePolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     ResizableItem::mouseReleaseEvent(event);
 }
 
-void ResizablePolygonItem::updateControlPoints()
+void ResizableRingItem::updateControlPoints()
 {
     controlPoints.clear();
-           
+
     qDebug() << "ResizablePolygonItem::updateControlPoints()::controlPoints.clear()";
 }

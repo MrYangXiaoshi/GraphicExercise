@@ -83,10 +83,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ResizableCircleItem.cpp" />
     <ClCompile Include="ResizableEllipseItem.cpp" />
     <ClCompile Include="ResizableItem.cpp" />
     <ClCompile Include="ResizablePolygonItem.cpp" />
     <ClCompile Include="ResizableRectItem.cpp" />
+    <ClCompile Include="ResizableRingItem.cpp" />
     <ClCompile Include="ResizableRotateRectItem.cpp" />
     <QtRcc Include="GraphicExercise.qrc" />
     <QtUic Include="GraphicExercise.ui" />
@@ -95,10 +97,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ResizableCircleItem.h" />
     <ClInclude Include="ResizableEllipseItem.h" />
     <ClInclude Include="ResizableItem.h" />
     <ClInclude Include="ResizablePolygonItem.h" />
     <ClInclude Include="ResizableRectItem.h" />
+    <ClInclude Include="ResizableRingItem.h" />
     <ClInclude Include="ResizableRotateRectItem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

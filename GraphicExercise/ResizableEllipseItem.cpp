@@ -38,8 +38,6 @@ void ResizableEllipseItem::setEllipseRect(const QRectF& newRect) {
 void ResizableEllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
     if (resizing && revealPoint) {
         switch (resizingIndex) {
-            setEllipseRect(QRectF(event->pos().x(), ellipseRect.top(), ellipseRect.right() - event->pos().x(), event->pos().y() - ellipseRect.top()));
-            break;
         case 0: // ио
             setEllipseRect(QRectF(ellipseRect.left(), event->pos().y(), ellipseRect.width(), ellipseRect.bottom() - event->pos().y()));
             break;

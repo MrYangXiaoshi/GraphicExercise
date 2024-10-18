@@ -1,12 +1,11 @@
 #pragma once
-#include <qgraphicsitem.h>
 #include "ResizableItem.h"
 
-class ResizablePolygonItem :
+class ResizableRingItem :
     public ResizableItem
 {
 public:
-    ResizablePolygonItem::ResizablePolygonItem();
+    ResizableRingItem::ResizableRingItem();
 
     virtual QRectF boundingRect() const override;
 
@@ -18,7 +17,9 @@ protected:
 
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 private:
-    QPolygonF polygon;
+    //QPolygonF polygon;
+    QRectF circleRect1;
+    QRectF circleRect2;
 
     bool unSetted;
 

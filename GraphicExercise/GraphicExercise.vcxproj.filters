@@ -55,6 +55,12 @@
     <ClCompile Include="ResizableRotateRectItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ResizableCircleItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableRingItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResizableRectItem.h">
@@ -70,6 +76,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ResizableRotateRectItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableCircleItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableRingItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
