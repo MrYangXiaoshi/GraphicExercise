@@ -20,6 +20,8 @@ protected:
 private:
     QPolygonF polygon;
 
+    bool unSetted;
+
     // Í¨¹ý ResizableItem ¼Ì³Ð
     virtual void updateControlPoints() override;
     

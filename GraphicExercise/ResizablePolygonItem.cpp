@@ -7,6 +7,9 @@
 ResizablePolygonItem::ResizablePolygonItem()
 {
     setFlag(QGraphicsItem::ItemIsMovable);
+    controlPoints.clear();
+    unSetted = true;
+    
 }
 
 QRectF ResizablePolygonItem::boundingRect() const
@@ -48,7 +51,7 @@ void ResizablePolygonItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void ResizablePolygonItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
-    static bool unSetted = true;
+    
     if (unSetted) {
         if (!resizing) {
             controlPoints.append(event->pos());
@@ -66,7 +69,6 @@ void ResizablePolygonItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 
 void ResizablePolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    static bool unSetted = true;
     if (unSetted) {
         if (!resizing) {
             controlPoints.append(event->pos());
@@ -89,13 +91,4 @@ void ResizablePolygonItem::updateControlPoints()
     controlPoints.clear();
            
     qDebug() << "ResizablePolygonItem::updateControlPoints()::controlPoints.clear()";
-}
-
-void ResizablePolygonItem::setControlPoints(QGraphicsSceneMouseEvent* event)
-{
-    
-    //controlPoints.append(QPointF(100, 100));
-    //controlPoints.append(QPointF(300, 100));
-    //controlPoints.append(QPointF(200, 200));
-    //controlPoints.append(QPointF(100, 200));
 }

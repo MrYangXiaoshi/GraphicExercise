@@ -10,45 +10,68 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     : QMainWindow(parent)
 {
     qDebug() << "GraphicExercise###";
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    QGraphicsScene* scene = new QGraphicsScene(this);
 
-    QGraphicsView* view = new QGraphicsView(scene);
+    ui.setupUi(this);
+
+    // 创建一个 QWidget 作为 central widget
+    QWidget* centralWidget = new QWidget(this);
+    setCentralWidget(centralWidget);
+
+    // 创建水平布局
+    QHBoxLayout* layout = new QHBoxLayout(centralWidget);
+
+    // 创建左侧视图
+    QGraphicsView* view = new QGraphicsView(centralWidget);
     view->setRenderHint(QPainter::Antialiasing);
-    view->setBackgroundBrush(Qt::black);
-    view->setSceneRect(0, 0, 400, 400);
-
-    QPushButton* rectButton = new QPushButton("Add Rectangle");
-    QPushButton* ellipseButton = new QPushButton("Add Ellipse");
-    QPushButton* polygonButton = new QPushButton("Add Polygon");
-
-    connect(rectButton, &QPushButton::clicked, [scene]() {
-        QGraphicsRectItem* rectItem = new QGraphicsRectItem(100, 100, 200, 100);
-        rectItem->setBrush(Qt::green);
-        scene->addItem(rectItem);
-        });
-
-    connect(ellipseButton, &QPushButton::clicked, [scene]() {
-        QGraphicsEllipseItem* ellipseItem = new QGraphicsEllipseItem(50, 50, 100, 50);
-        ellipseItem->setBrush(Qt::blue);
-        scene->addItem(ellipseItem);
-        });
-
-    connect(polygonButton, &QPushButton::clicked, [scene]() {
-        ResizablePolygonItem* polygon = new ResizablePolygonItem();
-        scene->addItem(polygon);
-        });
-
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(rectButton);
-    buttonLayout->addWidget(ellipseButton);
-    buttonLayout->addWidget(polygonButton);
-
+    view->setFixedSize(400, 400);
     layout->addWidget(view);
+    view->setBackgroundBrush(Qt::black);
+    view->setScene(&scene);
+
+    // 创建右侧按钮列
+    QVBoxLayout* buttonLayout = new QVBoxLayout();
+    QPushButton* buttonRect = new QPushButton("Rect", centralWidget);
+    QPushButton* buttonRotateRect = new QPushButton("RotateRect", centralWidget);
+    QPushButton* buttonEllipse = new QPushButton("Ellipse", centralWidget);
+    QPushButton* buttonPolygon = new QPushButton("Polygon", centralWidget);
+
+    // 连接信号和槽
+    connect(buttonRect, &QPushButton::clicked, this, &GraphicExercise::onButtonRectClicked);
+    connect(buttonRotateRect, &QPushButton::clicked, this, &GraphicExercise::onButtonRotateRectClicked);
+    connect(buttonEllipse, &QPushButton::clicked, this, &GraphicExercise::onButtonEllipseClicked);
+    connect(buttonPolygon, &QPushButton::clicked, this, &GraphicExercise::onButtonPolygonClicked);
+
+    buttonLayout->addWidget(buttonRect);
+    buttonLayout->addWidget(buttonRotateRect);
+    buttonLayout->addWidget(buttonEllipse);
+    buttonLayout->addWidget(buttonPolygon);
+
     layout->addLayout(buttonLayout);
-    setLayout(layout);
-    //ui.setupUi(this);
 }
 
 GraphicExercise::~GraphicExercise()
 {}
+
+void GraphicExercise::onButtonRectClicked() {
+    scene.clear();
+    ResizableRectItem* rectItem = new ResizableRectItem(100, 100, 200, 100);
+    scene.addItem(rectItem);
+}
+
+void GraphicExercise::onButtonRotateRectClicked() {
+    scene.clear();
+    ResizableRotateRectItem* rotateRect = new ResizableRotateRectItem(100, 100, 200, 100);
+    scene.addItem(rotateRect);
+}
+
+void GraphicExercise::onButtonEllipseClicked() {
+    scene.clear();
+    ResizableEllipseItem* ellipse = new ResizableEllipseItem(50, 50, 50, 50);
+    scene.addItem(ellipse);
+}
+
+void GraphicExercise::onButtonPolygonClicked() {
+    scene.clear();
+    ResizablePolygonItem* polygon = new ResizablePolygonItem();
+    scene.addItem(polygon);
+}

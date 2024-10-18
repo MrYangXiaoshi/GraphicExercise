@@ -2,6 +2,10 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_GraphicExercise.h"
+#include "ResizableRectItem.h"
+#include "ResizableRotateRectItem.h"
+#include "ResizableEllipseItem.h"
+#include "ResizablePolygonItem.h"
 
 class GraphicExercise : public QMainWindow
 {
@@ -13,4 +17,12 @@ public:
 
 private:
     Ui::GraphicExerciseClass ui;
+    //´´½¨³¡¾°
+    QGraphicsScene scene;
+
+private slots:
+    void onButtonRectClicked();
+    void onButtonRotateRectClicked();
+    void onButtonEllipseClicked();
+    void onButtonPolygonClicked();
 };
