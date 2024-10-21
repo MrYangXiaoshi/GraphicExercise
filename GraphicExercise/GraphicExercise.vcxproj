@@ -83,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ResizableCicularArcItem.cpp" />
     <ClCompile Include="ResizableCircleItem.cpp" />
     <ClCompile Include="ResizableEllipseItem.cpp" />
     <ClCompile Include="ResizableItem.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ResizableCicularArcItem.h" />
     <ClInclude Include="ResizableCircleItem.h" />
     <ClInclude Include="ResizableEllipseItem.h" />
     <ClInclude Include="ResizableItem.h" />

@@ -5,6 +5,7 @@
 #include "ResizablePolygonItem.h"
 #include "ResizableCircleItem.h"
 #include "ResizableRingItem.h"
+#include "ResizableCicularArcItem.h"
 #include <QVBoxLayout>
 #include <QPushButton>
 
@@ -100,12 +101,14 @@ void GraphicExercise::onButtonCircleClicked()
 void GraphicExercise::onButtonRingClicked()
 {
     scene.clear();
-    ResizableRingItem* ring = new ResizableRingItem(50, 50, 50, 50);
+    ResizableRingItem* ring = new ResizableRingItem(150, 150, 50, 50);
     scene.addItem(ring);
 }
 
 void GraphicExercise::onButtonCicularArcClicked()
 {
     scene.clear();
+    ResizableCicularArcItem* cicularArc = new ResizableCicularArcItem(150, 150, 100, 100);
+    scene.addItem(cicularArc);
 }
 
