@@ -1,89 +1,94 @@
 #include "ResizableRingItem.h"
 
-
-ResizableRingItem::ResizableRingItem()
-{
+ResizableRingItem::ResizableRingItem(qreal x, qreal y, qreal width, qreal height)
+    : circleRect(x, y, width, height) {
+    circleRect2 = circleRect.adjusted(-10, -10, 10, 10);
     setFlag(QGraphicsItem::ItemIsMovable);
-    controlPoints.clear();
-    unSetted = true;
-
+    updateControlPoints();
 }
 
 QRectF ResizableRingItem::boundingRect() const
 {
-    return circleRect1.adjusted(-400, -400, 400, 400);
+    return circleRect.adjusted(-400, -400, 400, 400);
 }
 
-void ResizableRingItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
-{
+
+void ResizableRingItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     QPen pen(Qt::green);
     pen.setWidth(3);
     painter->setPen(pen);
     painter->setBrush(QColor(155, 155, 155, 0));
+    painter->drawEllipse(circleRect);
 
-    //polygon.clear();
-    for (const auto& point : controlPoints) {
-        //polygon << controlPoints;
-        qDebug() << controlPoints;
-    }
-    //画出多边形
-    //painter->drawPolygon(polygon);
+    painter->drawEllipse(circleRect2);
 
+    //父类绘制控制点
     ResizableItem::paint(painter, option, widget);
 }
 
-void ResizableRingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-{
-    //判断当前鼠标是否按压在控制点上
+void ResizableRingItem::updateControlPoints() {
+    controlPoints.clear();
+    controlPoints.append(QPointF((circleRect.left() + circleRect.right()) / 2, circleRect.top()));    // 上
+    controlPoints.append(QPointF((circleRect.left() + circleRect.right()) / 2, circleRect.bottom())); // 下
+    controlPoints.append(QPointF(circleRect.left(), (circleRect.top() + circleRect.bottom()) / 2));    // 左
+    controlPoints.append(QPointF(circleRect.right(), (circleRect.top() + circleRect.bottom()) / 2));   // 右
+    controlPoints.append(QPointF((circleRect2.left() + circleRect2.right()) / 2, circleRect2.top()));    // 上
+    controlPoints.append(QPointF((circleRect2.left() + circleRect2.right()) / 2, circleRect2.bottom())); // 下
+    controlPoints.append(QPointF(circleRect2.left(), (circleRect2.top() + circleRect2.bottom()) / 2));    // 左
+    controlPoints.append(QPointF(circleRect2.right(), (circleRect2.top() + circleRect2.bottom()) / 2));   // 右
+}
+
+void ResizableRingItem::setCircleRect(const QRectF& newRect) {
+    if (resizingIndex < 4) {
+        circleRect = newRect;
+    }
+    else {
+        circleRect2 = newRect;
+    }
+    updateControlPoints();
+    update();
+}
+
+void ResizableRingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
     if (resizing && revealPoint) {
-        controlPoints[resizingIndex] = event->pos();
-        update();
+        QPointF center = circleRect.center(); // 获取当前圆心
+
+        // 计算新的半径，保持圆心不变
+        qreal newRadius = 0;
+        switch (resizingIndex) {
+        case 0: // 上
+            newRadius = center.y() - event->pos().y(); // 计算上边缘新位置
+            break;
+        case 1: // 下
+            newRadius = event->pos().y() - center.y(); // 计算下边缘新位置
+            break;
+        case 2: // 左
+            newRadius = center.x() - event->pos().x(); // 计算左边缘新位置
+            break;
+        case 3: // 右
+            newRadius = event->pos().x() - center.x(); // 计算右边缘新位置
+            break;
+        case 4: // 上
+            newRadius = center.y() - event->pos().y(); // 计算上边缘新位置
+            break;
+        case 5: // 下
+            newRadius = event->pos().y() - center.y(); // 计算下边缘新位置
+            break;
+        case 6: // 左
+            newRadius = center.x() - event->pos().x(); // 计算左边缘新位置
+            break;
+        case 7: // 右
+            newRadius = event->pos().x() - center.x(); // 计算右边缘新位置
+            break;
+        }
+
+        // 确保半径为正值
+        if (newRadius < 0) {
+            newRadius = -newRadius;
+        }
+        setCircleRect(QRectF(center.x() - newRadius, center.y() - newRadius, newRadius * 2, newRadius * 2));
     }
     else {
         QGraphicsItem::mouseMoveEvent(event);
     }
-}
-
-void ResizableRingItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
-{
-
-    if (unSetted) {
-        if (!resizing) {
-            controlPoints.append(event->pos());
-        }
-        else if (QRectF(controlPoints[0].x() - 3, controlPoints[0].y() - 3, 6, 6).contains(event->pos())) {
-            controlPoints.append(controlPoints[0]);
-            unSetted = false;
-        }
-        else {
-            QGraphicsItem::hoverLeaveEvent(event);
-        }
-        update();
-    }
-}
-
-void ResizableRingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
-{
-    if (unSetted) {
-        if (!resizing) {
-            controlPoints.append(event->pos());
-        }
-        else if (QRectF(controlPoints[0].x() - 3, controlPoints[0].y() - 3, 6, 6).contains(event->pos())) {
-            controlPoints.append(controlPoints[0]);
-            unSetted = false;
-        }
-        else {
-            //QGraphicsItem::mouseReleaseEvent(event);
-            qDebug() << "ResizablePolygonItem::mouseReleaseEvent";
-        }
-        update();
-    }
-    ResizableItem::mouseReleaseEvent(event);
-}
-
-void ResizableRingItem::updateControlPoints()
-{
-    controlPoints.clear();
-
-    qDebug() << "ResizablePolygonItem::updateControlPoints()::controlPoints.clear()";
 }
