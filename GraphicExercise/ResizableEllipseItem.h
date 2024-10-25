@@ -19,6 +19,7 @@ private:
 
     void updateControlPoints();
     void setEllipseRect(const QRectF& newRect);
+    void rotateEllipse(const QPointF& currentPos); // Ðý×ªº¯Êý
 };
 
 #endif // RESIZABLEELLIPSEITEM_H

@@ -3,6 +3,7 @@
 ResizableEllipseItem::ResizableEllipseItem(qreal x, qreal y, qreal width, qreal height)
     : ellipseRect(x, y, width, height) {
     setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsSelectable);
     updateControlPoints();
 }
 
@@ -27,12 +28,22 @@ void ResizableEllipseItem::updateControlPoints() {
     controlPoints.append(QPointF((ellipseRect.left() + ellipseRect.right()) / 2, ellipseRect.bottom())); // 下
     controlPoints.append(QPointF(ellipseRect.left(), (ellipseRect.top() + ellipseRect.bottom()) / 2));    // 左
     controlPoints.append(QPointF(ellipseRect.right(), (ellipseRect.top() + ellipseRect.bottom()) / 2));   // 右
+
+    // 旋转控制点放在上方一定距离
+    QPointF rotateControlPoint = controlPoints[0] + QPointF(0, -10);  // 在上方放置旋转控制点
+    controlPoints.append(rotateControlPoint);
 }
 
 void ResizableEllipseItem::setEllipseRect(const QRectF& newRect) {
     ellipseRect = newRect;
     updateControlPoints();
     update();
+}
+
+void ResizableEllipseItem::rotateEllipse(const QPointF& currentPos) {
+    // 椭圆旋转
+    setTransformOriginPoint(ellipseRect.center()); // 设置旋转原点为椭圆中心
+    setRotation(rotation() + 1); // 设置旋转角度
 }
 
 void ResizableEllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
@@ -49,6 +60,9 @@ void ResizableEllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
             break;
         case 3: // 右
             setEllipseRect(QRectF(ellipseRect.left(), ellipseRect.top(), event->pos().x() - ellipseRect.left(), ellipseRect.height()));
+            break;
+        case 4: // 旋转控制点
+            rotateEllipse(event->pos());
             break;
         }
     }

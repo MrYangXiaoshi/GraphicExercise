@@ -17,13 +17,18 @@ void ResizableRotateRectItem::paint(QPainter* painter, const QStyleOptionGraphic
     pen.setWidth(3);
     painter->setPen(pen);
     painter->setBrush(QColor(155, 155, 155, 0));
-    painter->drawRect(rect);
+    //painter->drawRect(rect);
+
 
     polygon.clear();//必加（踩坑）
-    polygon << controlPoints[7] << controlPoints[8];
+    polygon << controlPoints[7];
+    for (int i = 0; i < 9; i++) {
+        polygon << controlPoints[i];
+    }
     qDebug() << controlPoints;
+
     //画出一条线
-    painter->drawPolygon(polygon);
+    painter->drawPolyline(polygon);
 
     ResizableItem::paint(painter, option, widget);
 }
@@ -40,6 +45,7 @@ void ResizableRotateRectItem::updateControlPoints()
     controlPoints.append(QPointF(rect.left(), rect.bottom()));           // 左下
     controlPoints.append(QPointF(rect.left(), (rect.top() + rect.bottom()) / 2));    // 左中
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, (rect.top() + rect.bottom()) / 2));//中心
+    controlPoints.append(QPointF((rect.left() + rect.right()) / 2, rect.top() - 10));    // 上中旋转点
 }
 
 void ResizableRotateRectItem::setRect(const QRectF& newRect)
@@ -78,9 +84,18 @@ void ResizableRotateRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         case 7: // 左中
             setRect(QRectF(event->pos().x(), rect.top(), rect.right() - event->pos().x(), rect.height())); // 左中
             break;
+        case 9://旋转点
+            rotateRect(event->pos());
+            break;
         }
     }
     else {
         QGraphicsItem::mouseMoveEvent(event);
     }
+}
+
+void ResizableRotateRectItem::rotateRect(const QPointF& currentPos)
+{
+    setTransformOriginPoint(rect.center()); // 设置旋转原点为椭圆中心
+    setRotation(rotation() + 1); // 设置旋转角度
 }

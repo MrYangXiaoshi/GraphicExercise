@@ -1,5 +1,6 @@
 #pragma once
 #include "ResizableItem.h"
+
 class ResizableRotateRectItem :
     public ResizableItem
 {
@@ -21,5 +22,8 @@ protected:
 private:
     QRectF rect;
     QPolygonF polygon;
+    QTransform transform;
+
+    void rotateRect(const QPointF& currentPos); // Ðý×ªº¯Êý
 };
 
