@@ -1,11 +1,16 @@
 #pragma once
-
 #include <QtWidgets/QMainWindow>
 #include "ui_GraphicExercise.h"
 #include "ResizableRectItem.h"
 #include "ResizableRotateRectItem.h"
 #include "ResizableEllipseItem.h"
 #include "ResizablePolygonItem.h"
+#include "ResizableCircleItem.h"
+#include "ResizableRingItem.h"
+#include "ResizableCicularArcItem.h"
+#include <opencv2/opencv.hpp>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 class GraphicExercise : public QMainWindow
 {
@@ -19,6 +24,9 @@ private:
     Ui::GraphicExerciseClass ui;
     //´´½¨³¡¾°
     QGraphicsScene scene;
+    QGraphicsScene sceneBack;
+    QGraphicsPixmapItem* backgroundItem = NULL;
+    QImage MatToQImage(const cv::Mat& mat);
 
 private slots:
     void onButtonRectClicked();

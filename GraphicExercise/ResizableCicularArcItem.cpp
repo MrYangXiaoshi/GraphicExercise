@@ -124,7 +124,7 @@ double ResizableCicularArcItem::calculateSpanAngle(QPointF& point)
     double vectorX = point.x() - center.x();
     double vectorY = point.y() - center.y();
 
-    // 计算角度（弧度）
+    // 计算角度弧度
     double angleInRadians = atan2(vectorY, vectorX);
 
     // 将弧度转换为度
