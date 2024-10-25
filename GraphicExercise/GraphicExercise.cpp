@@ -22,7 +22,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     view->setRenderHint(QPainter::Antialiasing);
     view->setFixedSize(720, 540);
     layout->addWidget(view);
-    //view->setBackgroundBrush(Qt::black);
+    view->setBackgroundBrush(Qt::black);
     view->setScene(&scene);
 
     //OpenCV,背景图片
@@ -35,31 +35,10 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     }
     QImage qImage = MatToQImage(mat);
     QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
-    //scene.setBackgroundBrush(backgroundPixmap);
-    //view->setBackgroundBrush(backgroundPixmap);
+    scene.setBackgroundBrush(backgroundPixmap);
     backgroundItem = new QGraphicsPixmapItem(backgroundPixmap);
+    backgroundItem->setParentItem(nullptr); // 确保其生命周期独立于场景
     scene.addItem(backgroundItem);
-
-    ////OpenCVExercise
-    //Mat image;
-    //image = imread("D:\\AAA_Temp\\test.jpg");	// 载入图像
-    //if (image.empty())	// 或者 if(!image.data) 判断图片是否加载成功
-    //{
-    //    std::cout << "image not exist";
-    //}
-    //namedWindow("demo 图片");
-    //imshow("demo 图片", image);	// 显示图像
-
-    //Mat dst;//目标图像
-    //// 进行腐蚀操作
-    //Mat element = getStructuringElement(MORPH_RECT, Size(15, 15));
-    //erode(image, dst, element);
-
-    //blur(image, dst, Size(15, 15));
-    //imshow("腐蚀图片", dst);
-
-    //imwrite("D:\\AAA_Temp\\save.jpg", dst);
-    //waitKey(2000);	// 等待任意按键按下，退出图片显示
 
     // 创建右侧按钮列
     QVBoxLayout* buttonLayout = new QVBoxLayout();
@@ -96,11 +75,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
 GraphicExercise::~GraphicExercise()
 {}
 
-void GraphicExercise::onButtonRectClicked() {
-    scene.clear();
-    ResizableRectItem* rectItem = new ResizableRectItem(100, 100, 200, 100);
-    scene.addItem(rectItem);
-}
+
 
 
 QImage GraphicExercise::MatToQImage(const Mat& mat)
@@ -126,20 +101,40 @@ QImage GraphicExercise::MatToQImage(const Mat& mat)
     }
 }
 
+void GraphicExercise::keepOneItem()
+{
+    // 获取场景中的所有图形项
+    QList<QGraphicsItem*> items = scene.items();
+
+    // 遍历所有图形项，并删除所有不等于背景图项的其他项
+    for (QGraphicsItem* item : items) {
+        if (item != backgroundItem) {
+            scene.removeItem(item); // 从场景中移除
+            delete item;            // 删除图形项，确保内存被正确释放
+        }
+    }
+}
+
+void GraphicExercise::onButtonRectClicked() {
+    keepOneItem();
+    ResizableRectItem* rectItem = new ResizableRectItem(100, 100, 200, 100);
+    scene.addItem(rectItem);
+}
+
 void GraphicExercise::onButtonRotateRectClicked() {
-    scene.clear();
+    keepOneItem();
     ResizableRotateRectItem* rotateRect = new ResizableRotateRectItem(100, 100, 200, 100);
     scene.addItem(rotateRect);
 }
 
 void GraphicExercise::onButtonEllipseClicked() {
-    scene.clear();
+    keepOneItem();
     ResizableEllipseItem* ellipse = new ResizableEllipseItem(50, 50, 50, 100);
     scene.addItem(ellipse);
 }
 
 void GraphicExercise::onButtonPolygonClicked() {
-    scene.clear();
+    keepOneItem();
     ResizablePolygonItem* polygon = new ResizablePolygonItem();
     scene.addItem(polygon);
 }
@@ -147,21 +142,21 @@ void GraphicExercise::onButtonPolygonClicked() {
 
 void GraphicExercise::onButtonCircleClicked()
 {
-    scene.clear();
+    keepOneItem();
     ResizableCircleItem* circle = new ResizableCircleItem(50, 50, 50, 50);
     scene.addItem(circle);
 }
 
 void GraphicExercise::onButtonRingClicked()
 {
-    scene.clear();
+    keepOneItem();
     ResizableRingItem* ring = new ResizableRingItem(150, 150, 50, 50);
     scene.addItem(ring);
 }
 
 void GraphicExercise::onButtonCicularArcClicked()
 {
-    scene.clear();
+    keepOneItem();
     ResizableCicularArcItem* cicularArc = new ResizableCicularArcItem(200, 200, 150, 150);
     scene.addItem(cicularArc);
 }

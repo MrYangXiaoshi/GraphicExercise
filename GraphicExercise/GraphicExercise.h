@@ -24,9 +24,9 @@ private:
     Ui::GraphicExerciseClass ui;
     //´´½¨³¡¾°
     QGraphicsScene scene;
-    QGraphicsScene sceneBack;
-    QGraphicsPixmapItem* backgroundItem = NULL;
+    QGraphicsPixmapItem* backgroundItem;
     QImage MatToQImage(const cv::Mat& mat);
+    void keepOneItem();
 
 private slots:
     void onButtonRectClicked();
