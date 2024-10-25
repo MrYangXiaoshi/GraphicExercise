@@ -2,7 +2,7 @@
 
 ResizableCicularArcItem::ResizableCicularArcItem(qreal x, qreal y, qreal width, qreal height)
     : circleRect(x, y, width, height) {
-    circleRect2 = circleRect.adjusted(-15, -15, 15, 15);
+    circleRect2 = circleRect.adjusted(-30, -30, 30, 30);
     setFlag(QGraphicsItem::ItemIsMovable);
     updateControlPoints();
 }
@@ -41,6 +41,7 @@ void ResizableCicularArcItem::updateControlPoints() {
     controlPoints.append(getArcEndpoint(circleRect2, startAngle));   // 起点
     controlPoints.append(getArcEndpoint(circleRect2, (spanAngle + startAngle)));    // 终点
     controlPoints.append(QPointF(getArcCenterPoint(circleRect2))); // 中点
+    update();
 }
 
 void ResizableCicularArcItem::setCircleRect(const QRectF& newRect) {
@@ -51,7 +52,6 @@ void ResizableCicularArcItem::setCircleRect(const QRectF& newRect) {
         circleRect2 = newRect;
     }
     updateControlPoints();
-    update();
 }
 
 QPoint ResizableCicularArcItem::getArcCenterPoint(QRectF& rectangle)
@@ -108,8 +108,11 @@ double ResizableCicularArcItem::calculateAngle(QPointF& point)
     double angleInDegrees = angleInRadians * 180.0 / M_PI;
     
     // 确保角度在 0 到 360 度之间
-    if (angleInDegrees < 0) {
+    if (angleInDegrees < -360) {
         angleInDegrees += 360;
+    }
+    else if (angleInDegrees > 360) {
+        angleInDegrees -= 360;
     }
 
     return -angleInDegrees;

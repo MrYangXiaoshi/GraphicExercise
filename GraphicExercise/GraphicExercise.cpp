@@ -162,7 +162,7 @@ void GraphicExercise::onButtonRingClicked()
 void GraphicExercise::onButtonCicularArcClicked()
 {
     scene.clear();
-    ResizableCicularArcItem* cicularArc = new ResizableCicularArcItem(150, 150, 100, 100);
+    ResizableCicularArcItem* cicularArc = new ResizableCicularArcItem(200, 200, 150, 150);
     scene.addItem(cicularArc);
 }
 
