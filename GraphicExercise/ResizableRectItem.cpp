@@ -13,6 +13,8 @@ QRectF ResizableRectItem::boundingRect() const
 
 void ResizableRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
+    qDebug() << rect.x() << " " << rect.y() << " " << rect.size() << "####";
+
     QPen pen(Qt::green);
     pen.setWidth(3);
     painter->setPen(pen);

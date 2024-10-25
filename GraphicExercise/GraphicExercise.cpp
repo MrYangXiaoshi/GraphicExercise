@@ -20,7 +20,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     // ´´½¨×ó²àÊÓÍ¼
     QGraphicsView* view = new QGraphicsView(centralWidget);
     view->setRenderHint(QPainter::Antialiasing);
-    view->setFixedSize(720, 540);
+    view->setFixedSize(740, 660);
     layout->addWidget(view);
     view->setBackgroundBrush(Qt::black);
     view->setScene(&scene);
@@ -118,25 +118,29 @@ void GraphicExercise::keepOneItem()
 void GraphicExercise::onButtonRectClicked() {
     keepOneItem();
     ResizableRectItem* rectItem = new ResizableRectItem(100, 100, 200, 100);
-    scene.addItem(rectItem);
+    rectItem->setParentItem(backgroundItem);
+    //scene.addItem(rectItem);
 }
 
 void GraphicExercise::onButtonRotateRectClicked() {
     keepOneItem();
     ResizableRotateRectItem* rotateRect = new ResizableRotateRectItem(100, 100, 200, 100);
-    scene.addItem(rotateRect);
+    rotateRect->setParentItem(backgroundItem);
+    //scene.addItem(rotateRect);
 }
 
 void GraphicExercise::onButtonEllipseClicked() {
     keepOneItem();
     ResizableEllipseItem* ellipse = new ResizableEllipseItem(50, 50, 50, 100);
-    scene.addItem(ellipse);
+    ellipse->setParentItem(backgroundItem);
+    //scene.addItem(ellipse);
 }
 
 void GraphicExercise::onButtonPolygonClicked() {
     keepOneItem();
     ResizablePolygonItem* polygon = new ResizablePolygonItem();
-    scene.addItem(polygon);
+    polygon->setParentItem(backgroundItem);
+    //scene.addItem(polygon);
 }
 
 
@@ -144,20 +148,23 @@ void GraphicExercise::onButtonCircleClicked()
 {
     keepOneItem();
     ResizableCircleItem* circle = new ResizableCircleItem(50, 50, 50, 50);
-    scene.addItem(circle);
+    circle->setParentItem(backgroundItem);
+    //scene.addItem(circle);
 }
 
 void GraphicExercise::onButtonRingClicked()
 {
     keepOneItem();
     ResizableRingItem* ring = new ResizableRingItem(150, 150, 50, 50);
-    scene.addItem(ring);
+    ring->setParentItem(backgroundItem);
+    //scene.addItem(ring);
 }
 
 void GraphicExercise::onButtonCicularArcClicked()
 {
     keepOneItem();
     ResizableCicularArcItem* cicularArc = new ResizableCicularArcItem(200, 200, 150, 150);
-    scene.addItem(cicularArc);
+    cicularArc->setParentItem(backgroundItem);
+    //scene.addItem(cicularArc);
 }
 
