@@ -118,8 +118,9 @@ void GraphicExercise::keepOneItem(){
 void GraphicExercise::onButtonImageHandleClicked()
 {
     QList<QGraphicsItem*> items = scene.items();
-    QGraphicsItem* child;
+    QGraphicsItem* child = nullptr;//·ÀÖ¹ÄÚ´æÒç³ö
     for (QGraphicsItem* item : items) {
+        qDebug() << "123line:" << item;
         if (item != backgroundItem) {
             child = item;
         }
@@ -142,8 +143,8 @@ void GraphicExercise::onButtonImageHandleClicked()
 void GraphicExercise::onButtonRectClicked() {
     keepOneItem();
     ResizableRectItem* rectItem = new ResizableRectItem(100, 100, 200, 100);
-    //rectItem->setParentItem(backgroundItem);
-    scene.addItem(rectItem);
+    rectItem->setParentItem(backgroundItem);
+    //scene.addItem(rectItem);
 }
 
 void GraphicExercise::onButtonRotateRectClicked() {
