@@ -52,6 +52,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     QPushButton* buttonRing = new QPushButton("Ring", centralWidget);
     QPushButton* buttonCicularArc = new QPushButton("CicularArc", centralWidget);
     QPushButton* buttonImageHandle = new QPushButton("ImageHandle", centralWidget);
+    buttonImageHandle->setStyleSheet("background-color: yellow;");
 
     // 连接信号和槽
     connect(buttonRect, &QPushButton::clicked, this, &GraphicExercise::onButtonRectClicked);
@@ -78,9 +79,6 @@ GraphicExercise::GraphicExercise(QWidget *parent)
 GraphicExercise::~GraphicExercise()
 {}
 
-
-
-
 QImage GraphicExercise::MatToQImage(const Mat& mat)
 {
     // 如果是灰度图像
@@ -104,8 +102,7 @@ QImage GraphicExercise::MatToQImage(const Mat& mat)
     }
 }
 
-void GraphicExercise::keepOneItem()
-{
+void GraphicExercise::keepOneItem(){
     // 获取场景中的所有图形项
     QList<QGraphicsItem*> items = scene.items();
 
@@ -170,27 +167,21 @@ void GraphicExercise::onButtonPolygonClicked() {
     //scene.addItem(polygon);
 }
 
-
-void GraphicExercise::onButtonCircleClicked()
-{
+void GraphicExercise::onButtonCircleClicked(){
     keepOneItem();
     ResizableCircleItem* circle = new ResizableCircleItem(50, 50, 50, 50);
     circle->setParentItem(backgroundItem);
     //scene.addItem(circle);
 }
 
-
-
-void GraphicExercise::onButtonRingClicked()
-{
+void GraphicExercise::onButtonRingClicked(){
     keepOneItem();
     ResizableRingItem* ring = new ResizableRingItem(150, 150, 50, 50);
     ring->setParentItem(backgroundItem);
     //scene.addItem(ring);
 }
 
-void GraphicExercise::onButtonCicularArcClicked()
-{
+void GraphicExercise::onButtonCicularArcClicked(){
     keepOneItem();
     ResizableCicularArcItem* cicularArc = new ResizableCicularArcItem(200, 200, 150, 150);
     cicularArc->setParentItem(backgroundItem);
