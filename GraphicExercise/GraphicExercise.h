@@ -25,6 +25,7 @@ private:
     //´´½¨³¡¾°
     QGraphicsScene scene;
     QGraphicsPixmapItem* backgroundItem;
+    cv::Mat mat;
     QImage MatToQImage(const cv::Mat& mat);
     void keepOneItem();
 

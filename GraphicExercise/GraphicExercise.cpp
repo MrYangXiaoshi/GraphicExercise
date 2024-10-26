@@ -26,7 +26,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     view->setScene(&scene);
 
     //OpenCV,背景图片
-    Mat mat = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");
+    mat = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");
     if (mat.empty()) {
         qDebug() << "Failed to load image!";
     }
@@ -117,6 +117,7 @@ void GraphicExercise::keepOneItem(){
 
 void GraphicExercise::onButtonImageHandleClicked()
 {
+    mat = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");//重置原图片
     QList<QGraphicsItem*> items = scene.items();
     QGraphicsItem* child = nullptr;//防止内存溢出
     for (QGraphicsItem* item : items) {
@@ -136,6 +137,37 @@ void GraphicExercise::onButtonImageHandleClicked()
         //输出父图形项的roi
         qDebug() << topLeft << bottomRight <<  QRectF(topLeft, bottomRight) << "###";
         qDebug() << childArea << "####";
+        qDebug() << "child->boundingRect():" << child->boundingRect();
+
+        Rect roi(topLeft.x(), topLeft.y(),
+            child->boundingRect().width(), child->boundingRect().height());
+
+        // 提取ROI
+        Mat imageROI = mat(roi);
+
+        // 将ROI转换为灰度图像
+        Mat grayROI;
+        cvtColor(imageROI, grayROI, COLOR_BGR2GRAY);
+
+        // 对灰度图像进行二值化处理
+        Mat binaryROI;
+        threshold(grayROI, binaryROI, 128, 255, THRESH_BINARY);
+
+        // 将二值化的结果转换回 BGR 三通道 (如果原图像是彩色的)
+        Mat binaryROIColor;
+        cvtColor(binaryROI, binaryROIColor, COLOR_GRAY2BGR);
+
+        // 将处理后的ROI放回原图
+        binaryROIColor.copyTo(mat(roi));
+
+        QImage qImage = MatToQImage(mat);
+        QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
+        /*scene.setBackgroundBrush(backgroundPixmap);
+        backgroundItem = new QGraphicsPixmapItem(backgroundPixmap);*/
+        //backgroundItem->setTransformOriginPoint(0, 0);
+        //scene.addItem(backgroundItem);
+        //backgroundItem->setPos(0, 0);
+        backgroundItem->setPixmap(backgroundPixmap);
     }
     return;
 }
