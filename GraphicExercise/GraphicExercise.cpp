@@ -37,8 +37,9 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
     scene.setBackgroundBrush(backgroundPixmap);
     backgroundItem = new QGraphicsPixmapItem(backgroundPixmap);
-    backgroundItem->setParentItem(nullptr); // 确保其生命周期独立于场景
+    backgroundItem->setTransformOriginPoint(0, 0);
     scene.addItem(backgroundItem);
+    backgroundItem->setPos(0, 0);
 
     // 创建右侧按钮列
     QVBoxLayout* buttonLayout = new QVBoxLayout();
@@ -50,6 +51,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     QPushButton* buttonCircle = new QPushButton("Circle", centralWidget);
     QPushButton* buttonRing = new QPushButton("Ring", centralWidget);
     QPushButton* buttonCicularArc = new QPushButton("CicularArc", centralWidget);
+    QPushButton* buttonImageHandle = new QPushButton("ImageHandle", centralWidget);
 
     // 连接信号和槽
     connect(buttonRect, &QPushButton::clicked, this, &GraphicExercise::onButtonRectClicked);
@@ -59,7 +61,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     connect(buttonCircle, &QPushButton::clicked, this, &GraphicExercise::onButtonCircleClicked);
     connect(buttonRing, &QPushButton::clicked, this, &GraphicExercise::onButtonRingClicked);
     connect(buttonCicularArc, &QPushButton::clicked, this, &GraphicExercise::onButtonCicularArcClicked);
-
+    connect(buttonImageHandle, &QPushButton::clicked, this, &GraphicExercise::onButtonImageHandleClicked);
 
     buttonLayout->addWidget(buttonRect);
     buttonLayout->addWidget(buttonRotateRect);
@@ -68,6 +70,7 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     buttonLayout->addWidget(buttonCircle);
     buttonLayout->addWidget(buttonRing);
     buttonLayout->addWidget(buttonCicularArc);
+    buttonLayout->addWidget(buttonImageHandle);
 
     layout->addLayout(buttonLayout);
 }
@@ -115,11 +118,35 @@ void GraphicExercise::keepOneItem()
     }
 }
 
+void GraphicExercise::onButtonImageHandleClicked()
+{
+    QList<QGraphicsItem*> items = scene.items();
+    QGraphicsItem* child;
+    for (QGraphicsItem* item : items) {
+        if (item != backgroundItem) {
+            child = item;
+        }
+    }
+    
+    if (backgroundItem && child) {
+        // 获取子图形项在父图形项中的位置
+        QPointF topLeft = child->mapToParent(child->boundingRect().topLeft());
+        QPointF bottomRight = child->mapToParent(child->boundingRect().bottomRight());
+        QPolygonF childArea = child->mapToParent(child->shape().boundingRect());
+        //QRectF childRect = child->mapToParent(child->rect());
+
+        //输出父图形项的roi
+        qDebug() << topLeft << bottomRight <<  QRectF(topLeft, bottomRight) << "###";
+        qDebug() << childArea << "####";
+    }
+    return;
+}
+
 void GraphicExercise::onButtonRectClicked() {
     keepOneItem();
     ResizableRectItem* rectItem = new ResizableRectItem(100, 100, 200, 100);
-    rectItem->setParentItem(backgroundItem);
-    //scene.addItem(rectItem);
+    //rectItem->setParentItem(backgroundItem);
+    scene.addItem(rectItem);
 }
 
 void GraphicExercise::onButtonRotateRectClicked() {
@@ -151,6 +178,8 @@ void GraphicExercise::onButtonCircleClicked()
     circle->setParentItem(backgroundItem);
     //scene.addItem(circle);
 }
+
+
 
 void GraphicExercise::onButtonRingClicked()
 {

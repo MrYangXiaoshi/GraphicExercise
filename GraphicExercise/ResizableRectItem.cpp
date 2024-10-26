@@ -8,7 +8,7 @@ ResizableRectItem::ResizableRectItem(qreal x, qreal y, qreal width, qreal height
 
 QRectF ResizableRectItem::boundingRect() const
 {
-    return rect.adjusted(-400, -400, 400, 400);
+    return rect.adjusted(-3, -3, 3, 3);
 }
 
 void ResizableRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

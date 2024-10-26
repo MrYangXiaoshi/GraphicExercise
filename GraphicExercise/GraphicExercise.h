@@ -36,4 +36,5 @@ private slots:
     void onButtonRingClicked();
     void onButtonCicularArcClicked();
     void onButtonCircleClicked();
+    void onButtonImageHandleClicked();
 };
