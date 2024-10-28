@@ -26,8 +26,10 @@ private:
     QGraphicsScene scene;
     QGraphicsPixmapItem* backgroundItem;
     cv::Mat image;
+    cv::Mat mask;
     QImage MatToQImage(const cv::Mat& mat);
     void keepOneItem();
+    void handleMask();
 
 private slots:
     void onButtonRectClicked();

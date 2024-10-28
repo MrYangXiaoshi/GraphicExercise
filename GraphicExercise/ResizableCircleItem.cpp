@@ -29,6 +29,11 @@ void ResizableCircleItem::updateControlPoints() {
     controlPoints.append(QPointF((circleRect.left() + circleRect.right()) / 2, circleRect.bottom())); // 下
     controlPoints.append(QPointF(circleRect.left(), (circleRect.top() + circleRect.bottom()) / 2));    // 左
     controlPoints.append(QPointF(circleRect.right(), (circleRect.top() + circleRect.bottom()) / 2));   // 右
+
+    //记录roi关键点
+    roiPoly.clear();
+    roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3];
+    qDebug() << "roiPoly" << roiPoly << "####";
 }
 
 void ResizableCircleItem::setCircleRect(const QRectF& newRect) {

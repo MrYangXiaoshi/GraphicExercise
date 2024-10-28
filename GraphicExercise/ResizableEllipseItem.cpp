@@ -33,8 +33,10 @@ void ResizableEllipseItem::updateControlPoints() {
     QPointF rotateControlPoint = controlPoints[0] + QPointF(0, -10);  // 在上方放置旋转控制点
     controlPoints.append(rotateControlPoint);
 
+    //记录roi关键点
     roiPoly.clear();
     roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3];
+    qDebug() << "roiPoly" << roiPoly << "####";
 }
 
 void ResizableEllipseItem::setEllipseRect(const QRectF& newRect) {

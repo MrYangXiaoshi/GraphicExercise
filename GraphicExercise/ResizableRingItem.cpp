@@ -36,6 +36,12 @@ void ResizableRingItem::updateControlPoints() {
     controlPoints.append(QPointF((circleRect2.left() + circleRect2.right()) / 2, circleRect2.bottom())); // 下
     controlPoints.append(QPointF(circleRect2.left(), (circleRect2.top() + circleRect2.bottom()) / 2));    // 左
     controlPoints.append(QPointF(circleRect2.right(), (circleRect2.top() + circleRect2.bottom()) / 2));   // 右
+
+    //记录roi关键点
+    roiPoly.clear();
+    roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3]
+        << controlPoints[4] << controlPoints[5] << controlPoints[6] << controlPoints[7];
+    qDebug() << "roiPoly" << roiPoly << "####";
 }
 
 void ResizableRingItem::setCircleRect(const QRectF& newRect) {

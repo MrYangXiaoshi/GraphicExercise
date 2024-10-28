@@ -115,6 +115,38 @@ void GraphicExercise::keepOneItem(){
     }
 }
 
+void GraphicExercise::handleMask()
+{
+    // 使用掩码提取多边形区域
+    cv::Mat maskRoi;
+    if (!mask.empty() && !image.empty()) {
+        image.copyTo(maskRoi, mask); // 通过掩码提取区域
+    }
+    else {
+        throw std::runtime_error("Image or mask is empty.");
+    }
+
+    // 将 ROI 转换为灰度图像
+    Mat grayROI;
+    cv::cvtColor(maskRoi, grayROI, COLOR_BGR2GRAY); // 多边形 maskRoi
+
+    // 对灰度图像进行二值化处理
+    Mat binaryROI;
+    cv::threshold(grayROI, binaryROI, 128, 255, THRESH_BINARY);
+
+    // 将二值化的结果转换回 BGR 三通道
+    Mat binaryROIColor;
+    cv::cvtColor(binaryROI, binaryROIColor, COLOR_GRAY2BGR);
+
+    // 将处理后的 ROI 放回原图
+    binaryROIColor.copyTo(image, mask); // 通过 mask 获取到的 roi
+
+    // 更新背景图像
+    QImage qImage = MatToQImage(image);
+    QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
+    backgroundItem->setPixmap(backgroundPixmap);
+}
+
 void GraphicExercise::onButtonImageHandleClicked()
 {
     image = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");//重置原图片
@@ -154,7 +186,7 @@ void GraphicExercise::onButtonImageHandleClicked()
             }
 
             // 创建一个与源图像相同大小的掩码，初始化为零（黑色）
-            cv::Mat mask = cv::Mat::zeros(image.size(), CV_8UC1);
+            mask = cv::Mat::zeros(image.size(), CV_8UC1);
 
             // 定义 cv 多边形的顶点
             std::vector<cv::Point> polygonPoints;
@@ -162,38 +194,33 @@ void GraphicExercise::onButtonImageHandleClicked()
                 polygonPoints.emplace_back(static_cast<int>(point.x()), static_cast<int>(point.y()));
             }
 
-            // 使用 fillPoly 在掩码上绘制多边形
-            std::vector<std::vector<cv::Point>> contours = { polygonPoints };
-            cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
-
-            // 使用掩码提取多边形区域
-            cv::Mat maskRoi;
-            if (!mask.empty() && !image.empty()) {
-                image.copyTo(maskRoi, mask); // 通过掩码提取区域
+            //绘制对应掩码
+            if (typeid(*child) == typeid(ResizableCircleItem)) {
+                // 使用 fillPoly 在掩码上绘制多边形
+                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
+                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
             }
-            else {
-                throw std::runtime_error("Image or mask is empty.");
+            else if (typeid(*child) == typeid(ResizableEllipseItem)) {
+                // 使用 fillPoly 在掩码上绘制多边形
+                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
+                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
             }
-
-            // 将 ROI 转换为灰度图像
-            Mat grayROI;
-            cv::cvtColor(maskRoi, grayROI, COLOR_BGR2GRAY); // 多边形 maskRoi
-
-            // 对灰度图像进行二值化处理
-            Mat binaryROI;
-            cv::threshold(grayROI, binaryROI, 128, 255, THRESH_BINARY);
-
-            // 将二值化的结果转换回 BGR 三通道
-            Mat binaryROIColor;
-            cv::cvtColor(binaryROI, binaryROIColor, COLOR_GRAY2BGR);
-
-            // 将处理后的 ROI 放回原图
-            binaryROIColor.copyTo(image, mask); // 通过 mask 获取到的 roi
-
-            // 更新背景图像
-            QImage qImage = MatToQImage(image);
-            QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
-            backgroundItem->setPixmap(backgroundPixmap);
+            else if (typeid(*child) == typeid(ResizableRingItem)) {
+                // 使用 fillPoly 在掩码上绘制多边形
+                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
+                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+            }
+            else if (typeid(*child) == typeid(ResizableCicularArcItem)) {
+                // 使用 fillPoly 在掩码上绘制多边形
+                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
+                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+            } else {//矩形、旋转矩形、多边形
+                // 使用 fillPoly 在掩码上绘制多边形
+                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
+                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+            }
+            
+            handleMask();
         }
     }
     catch (const std::exception& e) {

@@ -35,13 +35,17 @@ void ResizableCicularArcItem::paint(QPainter* painter, const QStyleOptionGraphic
 
 void ResizableCicularArcItem::updateControlPoints() {
     controlPoints.clear();
-    controlPoints.append(getArcEndpoint(circleRect, startAngle));    // 起点
-    controlPoints.append(getArcEndpoint(circleRect, (spanAngle + startAngle))); // 终点
-    controlPoints.append(getArcCenterPoint(circleRect));    // 中点
-    controlPoints.append(getArcEndpoint(circleRect2, startAngle));   // 起点
-    controlPoints.append(getArcEndpoint(circleRect2, (spanAngle + startAngle)));    // 终点
-    controlPoints.append(QPointF(getArcCenterPoint(circleRect2))); // 中点
-    update();
+    controlPoints.append(getArcEndpoint(circleRect, startAngle));    // 起点0
+    controlPoints.append(getArcEndpoint(circleRect, (spanAngle + startAngle))); // 终点1
+    controlPoints.append(getArcCenterPoint(circleRect));    // 中点2
+    controlPoints.append(getArcEndpoint(circleRect2, startAngle));   // 起点3
+    controlPoints.append(getArcEndpoint(circleRect2, (spanAngle + startAngle)));    // 终点4
+    controlPoints.append(QPointF(getArcCenterPoint(circleRect2))); // 中点5
+    //记录roi关键点
+    roiPoly.clear();
+    roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3]
+        << controlPoints[4] << controlPoints[5];
+    qDebug() << "roiPoly" << roiPoly << "####";
 }
 
 void ResizableCicularArcItem::setCircleRect(const QRectF& newRect) {
