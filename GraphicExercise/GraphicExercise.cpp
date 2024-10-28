@@ -196,14 +196,33 @@ void GraphicExercise::onButtonImageHandleClicked()
 
             //绘制对应掩码
             if (typeid(*child) == typeid(ResizableCircleItem)) {
-                // 使用 fillPoly 在掩码上绘制多边形
-                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
-                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+                // 计算圆心坐标
+                int centerX = (polygonPoints[2].x + polygonPoints[3].x) / 2;
+                int centerY = (polygonPoints[0].y + polygonPoints[1].y) / 2;
+                cv::Point center(centerX, centerY);
+
+                // 计算半径（使用左侧点到圆心的距离作为半径）
+                int radius = std::abs(polygonPoints[2].x - centerX);
+
+                // 在掩码上绘制白色的圆形
+                cv::circle(mask, center, radius, cv::Scalar(255), -1);
             }
             else if (typeid(*child) == typeid(ResizableEllipseItem)) {
-                // 使用 fillPoly 在掩码上绘制多边形
-                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
-                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+                // 计算椭圆的中心
+                cv::Point center(
+                    (polygonPoints[2].x + polygonPoints[3].x) / 2, // x 坐标
+                    (polygonPoints[0].y + polygonPoints[1].y) / 2  // y 坐标
+                );
+
+                // 计算长轴和短轴的长度
+                int majorAxis = std::abs(polygonPoints[0].y - polygonPoints[1].y) / 2; // 纵向长轴
+                int minorAxis = std::abs(polygonPoints[2].x - polygonPoints[3].x) / 2; // 横向短轴
+
+                // 椭圆的旋转角度（假设为0度，不旋转）
+                int angle = 0;
+
+                // 在掩码上绘制白色的椭圆
+                cv::ellipse(mask, center, cv::Size(minorAxis, majorAxis), angle, 0, 360, cv::Scalar(255), -1);
             }
             else if (typeid(*child) == typeid(ResizableRingItem)) {
                 // 使用 fillPoly 在掩码上绘制多边形
