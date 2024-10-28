@@ -2,7 +2,8 @@
 #include "ResizableItem.h"
 
 class ResizableRectItem :
-    public ResizableItem
+    public ResizableItem,
+    public QGraphicsPolygonItem
 {
 public:
     ResizableRectItem(qreal x, qreal y, qreal width, qreal height);

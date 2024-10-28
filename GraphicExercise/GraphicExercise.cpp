@@ -26,14 +26,14 @@ GraphicExercise::GraphicExercise(QWidget *parent)
     view->setScene(&scene);
 
     //OpenCV,背景图片
-    mat = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");
-    if (mat.empty()) {
+    image = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");
+    if (image.empty()) {
         qDebug() << "Failed to load image!";
     }
     else {
-        qDebug() << "mat.rows:" << mat.rows << " mat.cols:" << mat.cols;
+        qDebug() << "mat.rows:" << image.rows << " mat.cols:" << image.cols;
     }
-    QImage qImage = MatToQImage(mat);
+    QImage qImage = MatToQImage(image);
     QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
     scene.setBackgroundBrush(backgroundPixmap);
     backgroundItem = new QGraphicsPixmapItem(backgroundPixmap);
@@ -117,7 +117,7 @@ void GraphicExercise::keepOneItem(){
 
 void GraphicExercise::onButtonImageHandleClicked()
 {
-    mat = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");//重置原图片
+    image = imread("C:\\AAA-Temp\\新建文件夹\\2023_04_19_15_37_05_612.bmp");//重置原图片
     QList<QGraphicsItem*> items = scene.items();
     QGraphicsItem* child = nullptr;//防止内存溢出
     for (QGraphicsItem* item : items) {
@@ -133,21 +133,42 @@ void GraphicExercise::onButtonImageHandleClicked()
         QPointF bottomRight = child->mapToParent(child->boundingRect().bottomRight());
         QPolygonF childArea = child->mapToParent(child->shape().boundingRect());
         //QRectF childRect = child->mapToParent(child->rect());
+        QGraphicsPolygonItem* polygonItem = dynamic_cast<QGraphicsPolygonItem*>(child);
+        
 
-        //输出父图形项的roi
-        qDebug() << topLeft << bottomRight <<  QRectF(topLeft, bottomRight) << "###";
-        qDebug() << childArea << "####";
-        qDebug() << "child->boundingRect():" << child->boundingRect();
-
+        //通过boundingRect获取到的矩形roi
         Rect roi(topLeft.x(), topLeft.y(),
             child->boundingRect().width(), child->boundingRect().height());
-
         // 提取ROI
-        Mat imageROI = mat(roi);
+        Mat imageROI = image(roi);
+
+        //获取多边形顶点
+        qDebug() << polygonItem->polygon();
+        QPolygonF poly = polygonItem->polygon();
+        //通过polygon获取到的多边形roi
+         // 创建一个与源图像相同大小的掩码，初始化为零（黑色）
+        cv::Mat mask = cv::Mat::zeros(image.size(), CV_8UC1);
+
+        // 定义cv多边形的顶点
+        std::vector<cv::Point> polygonPoints;
+        for (const QPointF& point : poly) {
+            // 将 QPointF 转换为 cv::Point
+            polygonPoints.emplace_back(static_cast<int>(point.x()), static_cast<int>(point.y()));
+        }
+
+        // 使用 fillPoly 在掩码上绘制多边形
+        std::vector<std::vector<cv::Point>> contours = { polygonPoints };
+        cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+
+        // 使用掩码提取多边形区域
+        cv::Mat maskRoi;
+        image.copyTo(maskRoi, mask); // 通过掩码提取区域
+        
 
         // 将ROI转换为灰度图像
         Mat grayROI;
-        cvtColor(imageROI, grayROI, COLOR_BGR2GRAY);
+        //cvtColor(imageROI, grayROI, COLOR_BGR2GRAY);//边界矩形Roi
+        cvtColor(maskRoi, grayROI, COLOR_BGR2GRAY);//多边形maskRoi
 
         // 对灰度图像进行二值化处理
         Mat binaryROI;
@@ -158,15 +179,11 @@ void GraphicExercise::onButtonImageHandleClicked()
         cvtColor(binaryROI, binaryROIColor, COLOR_GRAY2BGR);
 
         // 将处理后的ROI放回原图
-        binaryROIColor.copyTo(mat(roi));
+        //binaryROIColor.copyTo(image(roi)); //通过boundingRect获取到的矩形roi
+        binaryROIColor.copyTo(image, mask);//通过mask获取到的roi
 
-        QImage qImage = MatToQImage(mat);
+        QImage qImage = MatToQImage(image);
         QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
-        /*scene.setBackgroundBrush(backgroundPixmap);
-        backgroundItem = new QGraphicsPixmapItem(backgroundPixmap);*/
-        //backgroundItem->setTransformOriginPoint(0, 0);
-        //scene.addItem(backgroundItem);
-        //backgroundItem->setPos(0, 0);
         backgroundItem->setPixmap(backgroundPixmap);
     }
     return;
@@ -175,14 +192,14 @@ void GraphicExercise::onButtonImageHandleClicked()
 void GraphicExercise::onButtonRectClicked() {
     keepOneItem();
     ResizableRectItem* rectItem = new ResizableRectItem(100, 100, 200, 100);
-    rectItem->setParentItem(backgroundItem);
+    rectItem->ResizableItem::setParentItem(backgroundItem);
     //scene.addItem(rectItem);
 }
 
 void GraphicExercise::onButtonRotateRectClicked() {
     keepOneItem();
     ResizableRotateRectItem* rotateRect = new ResizableRotateRectItem(100, 100, 200, 100);
-    rotateRect->setParentItem(backgroundItem);
+    rotateRect->ResizableItem::setParentItem(backgroundItem);
     //scene.addItem(rotateRect);
 }
 

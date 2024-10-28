@@ -2,7 +2,7 @@
 
 ResizableRectItem::ResizableRectItem(qreal x, qreal y, qreal width, qreal height) : rect(x, y, width, height)
 {
-    setFlag(QGraphicsItem::ItemIsMovable);
+    ResizableItem::setFlag(QGraphicsItem::ItemIsMovable);
     updateControlPoints();
 }
 
@@ -36,6 +36,10 @@ void ResizableRectItem::updateControlPoints()
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, rect.bottom())); // 下中
     controlPoints.append(QPointF(rect.left(), (rect.top() + rect.bottom()) / 2));    // 左中
     controlPoints.append(QPointF(rect.right(), (rect.top() + rect.bottom()) / 2));   // 右中
+    // 设置多边形
+    QPolygonF newPoly;
+    newPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3];
+    this->setPolygon(newPoly); // 设置新的多边形
 }
 
 //更新控制点、重新绘图
@@ -43,7 +47,7 @@ void ResizableRectItem::setRect(const QRectF& newRect)
 {
     rect = newRect;
     updateControlPoints();
-    update();
+    ResizableItem::update();
 }
 
 //鼠标移动事件
