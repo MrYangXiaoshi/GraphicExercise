@@ -153,7 +153,7 @@ void GraphicExercise::onButtonImageHandleClicked()
         Mat binaryROI;
         threshold(grayROI, binaryROI, 128, 255, THRESH_BINARY);
 
-        // 将二值化的结果转换回 BGR 三通道 (如果原图像是彩色的)
+        // 将二值化的结果转换回 BGR 三通道
         Mat binaryROIColor;
         cvtColor(binaryROI, binaryROIColor, COLOR_GRAY2BGR);
 
