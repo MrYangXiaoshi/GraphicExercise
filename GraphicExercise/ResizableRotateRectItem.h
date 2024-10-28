@@ -21,7 +21,7 @@ protected:
 
 private:
     QRectF rect;
-    QPolygonF polygon;
+    QPolygonF polygon_user;
     QTransform transform;
 
     void rotateRect(const QPointF& currentPos); // Ðý×ªº¯Êý

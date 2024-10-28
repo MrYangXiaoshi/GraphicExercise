@@ -2,7 +2,7 @@
 
 ResizableRotateRectItem::ResizableRotateRectItem(qreal x, qreal y, qreal width, qreal height) : rect(x, y, width, height)
 {
-    setFlag(QGraphicsItem::ItemIsMovable);
+    ResizableItem::setFlag(QGraphicsItem::ItemIsMovable);
     updateControlPoints();
 }
 
@@ -20,15 +20,15 @@ void ResizableRotateRectItem::paint(QPainter* painter, const QStyleOptionGraphic
     //painter->drawRect(rect);
 
 
-    polygon.clear();//必加（踩坑）
-    polygon << controlPoints[7];
+    polygon_user.clear();//必加（踩坑）
+    polygon_user << controlPoints[7];
     for (int i = 0; i < 9; i++) {
-        polygon << controlPoints[i];
+        polygon_user << controlPoints[i];
     }
     qDebug() << controlPoints;
 
     //画出一条线
-    painter->drawPolyline(polygon);
+    painter->drawPolyline(polygon_user);
 
     ResizableItem::paint(painter, option, widget);
 }
@@ -36,23 +36,28 @@ void ResizableRotateRectItem::paint(QPainter* painter, const QStyleOptionGraphic
 void ResizableRotateRectItem::updateControlPoints()
 {
     controlPoints.clear();
-    controlPoints.append(QPointF(rect.left(), rect.top()));              // 左上
+    controlPoints.append(QPointF(rect.left(), rect.top()));              // 左上0
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, rect.top()));    // 上中
-    controlPoints.append(QPointF(rect.right(), rect.top()));             // 右上
+    controlPoints.append(QPointF(rect.right(), rect.top()));             // 右上2
     controlPoints.append(QPointF(rect.right(), (rect.top() + rect.bottom()) / 2));   // 右中
-    controlPoints.append(QPointF(rect.right(), rect.bottom()));          // 
+    controlPoints.append(QPointF(rect.right(), rect.bottom()));          //右下4
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, rect.bottom())); // 下中
-    controlPoints.append(QPointF(rect.left(), rect.bottom()));           // 左下
+    controlPoints.append(QPointF(rect.left(), rect.bottom()));           // 左下6
     controlPoints.append(QPointF(rect.left(), (rect.top() + rect.bottom()) / 2));    // 左中
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, (rect.top() + rect.bottom()) / 2));//中心
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, rect.top() - 10));    // 上中旋转点
+    // 设置多边形
+    QPolygonF newPoly;
+    newPoly << controlPoints[0] << controlPoints[2] << controlPoints[4] << controlPoints[6];
+    qDebug() << "newPoly" << newPoly << "####";
+    this->setPolygon(newPoly); // 设置新的多边形
 }
 
 void ResizableRotateRectItem::setRect(const QRectF& newRect)
 {
     rect = newRect;
     updateControlPoints();
-    update();
+    ResizableItem::update();
 }
 
 void ResizableRotateRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
@@ -96,6 +101,6 @@ void ResizableRotateRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void ResizableRotateRectItem::rotateRect(const QPointF& currentPos)
 {
-    setTransformOriginPoint(rect.center()); // 设置旋转原点为椭圆中心
-    setRotation(rotation() + 1); // 设置旋转角度
+    ResizableItem::setTransformOriginPoint(rect.center()); // 设置旋转原点为椭圆中心
+    ResizableItem::setRotation(ResizableItem::rotation() + 1); // 设置旋转角度
 }

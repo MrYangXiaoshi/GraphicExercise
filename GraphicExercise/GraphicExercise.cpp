@@ -124,67 +124,94 @@ void GraphicExercise::onButtonImageHandleClicked()
         qDebug() << "123line:" << item;
         if (item != backgroundItem) {
             child = item;
+            
         }
     }
-    
-    if (backgroundItem && child) {
-        // 获取子图形项在父图形项中的位置
-        QPointF topLeft = child->mapToParent(child->boundingRect().topLeft());
-        QPointF bottomRight = child->mapToParent(child->boundingRect().bottomRight());
-        QPolygonF childArea = child->mapToParent(child->shape().boundingRect());
-        //QRectF childRect = child->mapToParent(child->rect());
-        QGraphicsPolygonItem* polygonItem = dynamic_cast<QGraphicsPolygonItem*>(child);
-        
+    try {
+        if (backgroundItem && child) {
 
-        //通过boundingRect获取到的矩形roi
-        Rect roi(topLeft.x(), topLeft.y(),
-            child->boundingRect().width(), child->boundingRect().height());
-        // 提取ROI
-        Mat imageROI = image(roi);
+            // 获取子图形项在父图形项中的位置
+            QPointF topLeft = child->mapToParent(child->boundingRect().topLeft());
+            QPointF bottomRight = child->mapToParent(child->boundingRect().bottomRight());
+            QPolygonF childArea = child->mapToParent(child->shape().boundingRect());
 
-        //获取多边形顶点
-        qDebug() << polygonItem->polygon();
-        QPolygonF poly = polygonItem->polygon();
-        //通过polygon获取到的多边形roi
-         // 创建一个与源图像相同大小的掩码，初始化为零（黑色）
-        cv::Mat mask = cv::Mat::zeros(image.size(), CV_8UC1);
+            QGraphicsPolygonItem* polygonItem = dynamic_cast<QGraphicsPolygonItem*>(child);
+            if (!polygonItem) {
+                throw std::runtime_error("Child item is not a QGraphicsPolygonItem.");
+            }
+            qDebug() << "child-> parentItem:" << child->parentItem();
 
-        // 定义cv多边形的顶点
-        std::vector<cv::Point> polygonPoints;
-        for (const QPointF& point : poly) {
-            // 将 QPointF 转换为 cv::Point
-            polygonPoints.emplace_back(static_cast<int>(point.x()), static_cast<int>(point.y()));
+            //// 通过 boundingRect 获取到的矩形 roi
+            //QRectF boundingRect = child->boundingRect();
+            //Rect roi(static_cast<int>(boundingRect.topLeft().x()), static_cast<int>(boundingRect.topLeft().y()),
+            //    static_cast<int>(boundingRect.width()), static_cast<int>(boundingRect.height()));
+
+            //// 提取 ROI
+            //Mat imageROI = image(roi); 
+
+            // 获取多边形顶点
+            QPolygonF poly = polygonItem->polygon();
+
+            // 创建一个新的多边形来存储转换后的顶点
+            QPolygonF transformedPoly;
+
+            // 遍历多边形的每个顶点
+            for (const QPointF& point : poly) {
+                // 将每个点从子坐标系转换为父坐标系
+                QPointF parentPoint = polygonItem->mapToParent(point);
+                transformedPoly.append(parentPoint); // 添加到转换后的多边形
+            }
+            qDebug() << "poly:" << poly;
+            qDebug() << "transformedPoly:" << transformedPoly;
+
+            // 创建一个与源图像相同大小的掩码，初始化为零（黑色）
+            cv::Mat mask = cv::Mat::zeros(image.size(), CV_8UC1);
+
+            // 定义 cv 多边形的顶点
+            std::vector<cv::Point> polygonPoints;
+            for (const QPointF& point : transformedPoly) {
+                polygonPoints.emplace_back(static_cast<int>(point.x()), static_cast<int>(point.y()));
+            }
+
+            // 使用 fillPoly 在掩码上绘制多边形
+            std::vector<std::vector<cv::Point>> contours = { polygonPoints };
+            cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+
+            // 使用掩码提取多边形区域
+            cv::Mat maskRoi;
+            if (!mask.empty() && !image.empty()) {
+                image.copyTo(maskRoi, mask); // 通过掩码提取区域
+            }
+            else {
+                throw std::runtime_error("Image or mask is empty.");
+            }
+
+            // 将 ROI 转换为灰度图像
+            Mat grayROI;
+            cv::cvtColor(maskRoi, grayROI, COLOR_BGR2GRAY); // 多边形 maskRoi
+
+            // 对灰度图像进行二值化处理
+            Mat binaryROI;
+            cv::threshold(grayROI, binaryROI, 128, 255, THRESH_BINARY);
+
+            // 将二值化的结果转换回 BGR 三通道
+            Mat binaryROIColor;
+            cv::cvtColor(binaryROI, binaryROIColor, COLOR_GRAY2BGR);
+
+            // 将处理后的 ROI 放回原图
+            binaryROIColor.copyTo(image, mask); // 通过 mask 获取到的 roi
+
+            // 更新背景图像
+            QImage qImage = MatToQImage(image);
+            QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
+            backgroundItem->setPixmap(backgroundPixmap);
         }
-
-        // 使用 fillPoly 在掩码上绘制多边形
-        std::vector<std::vector<cv::Point>> contours = { polygonPoints };
-        cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
-
-        // 使用掩码提取多边形区域
-        cv::Mat maskRoi;
-        image.copyTo(maskRoi, mask); // 通过掩码提取区域
-        
-
-        // 将ROI转换为灰度图像
-        Mat grayROI;
-        //cvtColor(imageROI, grayROI, COLOR_BGR2GRAY);//边界矩形Roi
-        cvtColor(maskRoi, grayROI, COLOR_BGR2GRAY);//多边形maskRoi
-
-        // 对灰度图像进行二值化处理
-        Mat binaryROI;
-        threshold(grayROI, binaryROI, 128, 255, THRESH_BINARY);
-
-        // 将二值化的结果转换回 BGR 三通道
-        Mat binaryROIColor;
-        cvtColor(binaryROI, binaryROIColor, COLOR_GRAY2BGR);
-
-        // 将处理后的ROI放回原图
-        //binaryROIColor.copyTo(image(roi)); //通过boundingRect获取到的矩形roi
-        binaryROIColor.copyTo(image, mask);//通过mask获取到的roi
-
-        QImage qImage = MatToQImage(image);
-        QPixmap backgroundPixmap = QPixmap::fromImage(qImage);
-        backgroundItem->setPixmap(backgroundPixmap);
+    }
+    catch (const std::exception& e) {
+        qDebug() << "Exception occurred: " << e.what(); // 输出异常信息
+    }
+    catch (...) {
+        qDebug() << "An unknown exception occurred.";
     }
     return;
 }

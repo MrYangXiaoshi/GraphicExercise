@@ -8,7 +8,7 @@ ResizableRectItem::ResizableRectItem(qreal x, qreal y, qreal width, qreal height
 
 QRectF ResizableRectItem::boundingRect() const
 {
-    return rect.adjusted(-3, -3, 3, 3);
+    return rect.adjusted(-400, -400, 400, 400);
 }
 
 void ResizableRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
@@ -81,6 +81,7 @@ void ResizableRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             setRect(QRectF(rect.left(), rect.top(), event->pos().x() - rect.left(), rect.height()));
             break;
         }
+        updateControlPoints();
     }
     else {
         QGraphicsItem::mouseMoveEvent(event);

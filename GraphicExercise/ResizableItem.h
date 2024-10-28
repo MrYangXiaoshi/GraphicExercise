@@ -12,7 +12,7 @@
 #include <qdebug.h>
 
 class ResizableItem :
-    public QGraphicsItem
+    public QGraphicsPolygonItem
 {
 public:
     virtual void updateControlPoints() = 0;
