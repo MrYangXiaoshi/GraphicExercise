@@ -141,28 +141,17 @@ void GraphicExercise::onButtonImageHandleClicked()
             }
             qDebug() << "child-> parentItem:" << child->parentItem();
 
-            //// 通过 boundingRect 获取到的矩形 roi
-            //QRectF boundingRect = child->boundingRect();
-            //Rect roi(static_cast<int>(boundingRect.topLeft().x()), static_cast<int>(boundingRect.topLeft().y()),
-            //    static_cast<int>(boundingRect.width()), static_cast<int>(boundingRect.height()));
-
-            //// 提取 ROI
-            //Mat imageROI = image(roi); 
-
             // 获取多边形顶点
             QPolygonF poly = polygonItem->roiPoly;
 
             // 创建一个新的多边形来存储转换后的顶点
             QPolygonF transformedPoly;
 
-            // 遍历多边形的每个顶点
-            for (const QPointF& point : poly) {
-                // 将每个点从子坐标系转换为父坐标系
+            // 将每个点从子坐标系转换为父坐标系
+            for (const QPointF& point : poly) {   
                 QPointF parentPoint = polygonItem->mapToParent(point);
                 transformedPoly.append(parentPoint); // 添加到转换后的多边形
             }
-            qDebug() << "poly:" << poly;
-            qDebug() << "transformedPoly:" << transformedPoly;
 
             // 创建一个与源图像相同大小的掩码，初始化为零（黑色）
             cv::Mat mask = cv::Mat::zeros(image.size(), CV_8UC1);

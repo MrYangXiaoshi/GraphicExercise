@@ -37,6 +37,7 @@ void ResizableRectItem::updateControlPoints()
     controlPoints.append(QPointF(rect.left(), (rect.top() + rect.bottom()) / 2));    // ×óÖÐ
     controlPoints.append(QPointF(rect.right(), (rect.top() + rect.bottom()) / 2));   // ÓÒÖÐ
     
+    roiPoly.clear();
     roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3];
 }
 

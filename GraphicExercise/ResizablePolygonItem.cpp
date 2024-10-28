@@ -37,6 +37,7 @@ void ResizablePolygonItem::paint(QPainter* painter, const QStyleOptionGraphicsIt
     }
     else {
         painter->drawPolygon(polygon);
+        roiPoly = polygon;
     }
     
     ResizableItem::paint(painter, option, widget);

@@ -32,6 +32,9 @@ void ResizableEllipseItem::updateControlPoints() {
     // 旋转控制点放在上方一定距离
     QPointF rotateControlPoint = controlPoints[0] + QPointF(0, -10);  // 在上方放置旋转控制点
     controlPoints.append(rotateControlPoint);
+
+    roiPoly.clear();
+    roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3];
 }
 
 void ResizableEllipseItem::setEllipseRect(const QRectF& newRect) {
