@@ -135,7 +135,7 @@ void GraphicExercise::onButtonImageHandleClicked()
             QPointF bottomRight = child->mapToParent(child->boundingRect().bottomRight());
             QPolygonF childArea = child->mapToParent(child->shape().boundingRect());
 
-            QGraphicsPolygonItem* polygonItem = dynamic_cast<QGraphicsPolygonItem*>(child);
+            ResizableItem* polygonItem = dynamic_cast<ResizableItem*>(child);
             if (!polygonItem) {
                 throw std::runtime_error("Child item is not a QGraphicsPolygonItem.");
             }
@@ -150,7 +150,7 @@ void GraphicExercise::onButtonImageHandleClicked()
             //Mat imageROI = image(roi); 
 
             // 获取多边形顶点
-            QPolygonF poly = polygonItem->polygon();
+            QPolygonF poly = polygonItem->roiPoly;
 
             // 创建一个新的多边形来存储转换后的顶点
             QPolygonF transformedPoly;

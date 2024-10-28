@@ -2,7 +2,7 @@
 
 ResizableRotateRectItem::ResizableRotateRectItem(qreal x, qreal y, qreal width, qreal height) : rect(x, y, width, height)
 {
-    ResizableItem::setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsMovable);
     updateControlPoints();
 }
 
@@ -46,18 +46,18 @@ void ResizableRotateRectItem::updateControlPoints()
     controlPoints.append(QPointF(rect.left(), (rect.top() + rect.bottom()) / 2));    // 左中
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, (rect.top() + rect.bottom()) / 2));//中心
     controlPoints.append(QPointF((rect.left() + rect.right()) / 2, rect.top() - 10));    // 上中旋转点
-    // 设置多边形
-    QPolygonF newPoly;
-    newPoly << controlPoints[0] << controlPoints[2] << controlPoints[4] << controlPoints[6];
-    qDebug() << "newPoly" << newPoly << "####";
-    this->setPolygon(newPoly); // 设置新的多边形
+    
+    //设置roi多边形
+    roiPoly.clear();
+    roiPoly << controlPoints[0] << controlPoints[2] << controlPoints[4] << controlPoints[6];
+    qDebug() << "newPoly" << roiPoly << "####";
 }
 
 void ResizableRotateRectItem::setRect(const QRectF& newRect)
 {
     rect = newRect;
     updateControlPoints();
-    ResizableItem::update();
+    update();
 }
 
 void ResizableRotateRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
@@ -90,7 +90,9 @@ void ResizableRotateRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             setRect(QRectF(event->pos().x(), rect.top(), rect.right() - event->pos().x(), rect.height())); // 左中
             break;
         case 9://旋转点
+            qDebug() << "case 9";
             rotateRect(event->pos());
+            qDebug() << "case 9";
             break;
         }
     }
@@ -101,6 +103,6 @@ void ResizableRotateRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void ResizableRotateRectItem::rotateRect(const QPointF& currentPos)
 {
-    ResizableItem::setTransformOriginPoint(rect.center()); // 设置旋转原点为椭圆中心
-    ResizableItem::setRotation(ResizableItem::rotation() + 1); // 设置旋转角度
+    setTransformOriginPoint(rect.center()); // 设置旋转原点为椭圆中心
+    setRotation(rotation() + 1); // 设置旋转角度
 }
