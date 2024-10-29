@@ -65,7 +65,7 @@ void ResizableEllipseItem::updateControlPoints() {
     roiPoly.clear();
     roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3];
     addFivePoints();    
-    qDebug() << "roiPoly" << roiPoly << "####";
+    qDebug() << "roiPoly" << roiPoly;
 }
 
 void ResizableEllipseItem::setEllipseRect(const QRectF& newRect) {

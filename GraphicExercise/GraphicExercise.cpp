@@ -208,7 +208,7 @@ void GraphicExercise::onButtonImageHandleClicked()
                 cv::circle(mask, center, radius, cv::Scalar(255), -1);
             }
             else if (typeid(*child) == typeid(ResizableEllipseItem)) {
-                // 将四个点转换为 std::vector<cv::Point2f> 类型
+                // 将点转换为 std::vector<cv::Point2f> 类型
                 std::vector<cv::Point2f> points(polygonPoints.begin(), polygonPoints.end());
 
                 // 使用 fitEllipse 拟合椭圆
@@ -218,9 +218,23 @@ void GraphicExercise::onButtonImageHandleClicked()
                 cv::ellipse(mask, fittedEllipse, cv::Scalar(255), -1); // -1 表示填充
             }
             else if (typeid(*child) == typeid(ResizableRingItem)) {
-                // 使用 fillPoly 在掩码上绘制多边形
-                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
-                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+                // 计算圆心坐标
+                int centerX = (polygonPoints[2].x + polygonPoints[3].x) / 2;
+                int centerY = (polygonPoints[0].y + polygonPoints[1].y) / 2;
+                cv::Point center(centerX, centerY);
+
+                // 计算半径（使用左侧点到圆心的距离作为半径）
+                int radius = std::abs(polygonPoints[2].x - centerX);
+                int radius2 = std::abs(polygonPoints[6].x - centerX);
+
+                if (radius > radius2) {
+                    cv::circle(mask, center, radius, cv::Scalar(255), -1);
+                    cv::circle(mask, center, radius2, cv::Scalar(0), -1);
+                }
+                else {
+                    cv::circle(mask, center, radius2, cv::Scalar(255), -1);
+                    cv::circle(mask, center, radius, cv::Scalar(0), -1);
+                }
             }
             else if (typeid(*child) == typeid(ResizableCicularArcItem)) {
                 // 使用 fillPoly 在掩码上绘制多边形
