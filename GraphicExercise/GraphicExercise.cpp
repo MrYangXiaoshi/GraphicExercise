@@ -208,21 +208,14 @@ void GraphicExercise::onButtonImageHandleClicked()
                 cv::circle(mask, center, radius, cv::Scalar(255), -1);
             }
             else if (typeid(*child) == typeid(ResizableEllipseItem)) {
-                // 计算椭圆的中心
-                cv::Point center(
-                    (polygonPoints[2].x + polygonPoints[3].x) / 2, // x 坐标
-                    (polygonPoints[0].y + polygonPoints[1].y) / 2  // y 坐标
-                );
+                // 将四个点转换为 std::vector<cv::Point2f> 类型
+                std::vector<cv::Point2f> points(polygonPoints.begin(), polygonPoints.end());
 
-                // 计算长轴和短轴的长度
-                int majorAxis = std::abs(polygonPoints[0].y - polygonPoints[1].y) / 2; // 纵向长轴
-                int minorAxis = std::abs(polygonPoints[2].x - polygonPoints[3].x) / 2; // 横向短轴
+                // 使用 fitEllipse 拟合椭圆
+                cv::RotatedRect fittedEllipse = cv::fitEllipse(points);
 
-                // 椭圆的旋转角度（假设为0度，不旋转）
-                int angle = 0;
-
-                // 在掩码上绘制白色的椭圆
-                cv::ellipse(mask, center, cv::Size(minorAxis, majorAxis), angle, 0, 360, cv::Scalar(255), -1);
+                // 在掩码上绘制拟合的椭圆
+                cv::ellipse(mask, fittedEllipse, cv::Scalar(255), -1); // -1 表示填充
             }
             else if (typeid(*child) == typeid(ResizableRingItem)) {
                 // 使用 fillPoly 在掩码上绘制多边形

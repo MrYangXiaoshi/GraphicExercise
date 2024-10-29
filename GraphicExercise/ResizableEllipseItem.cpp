@@ -22,6 +22,34 @@ void ResizableEllipseItem::paint(QPainter* painter, const QStyleOptionGraphicsIt
     ResizableItem::paint(painter, option, widget);
 }
 
+void ResizableEllipseItem::addFivePoints()
+{
+    QVector<QPointF> points;
+
+    // 椭圆的中心
+    QPointF center = ellipseRect.center();
+
+    // 长轴和短轴的半径
+    double a = ellipseRect.width() / 2.0;  // 半长轴
+    double b = ellipseRect.height() / 2.0; // 半短轴
+
+    // 五个点的角度（0°、72°、144°、216°、288°）
+    const double angles[5] = { 0.0, 72.0, 144.0, 216.0, 288.0 };
+
+    // 计算椭圆上的五个点
+    for (double angle : angles) {
+        // 转换为弧度
+        double radians = qDegreesToRadians(angle);
+
+        // 计算点的坐标
+        double x = center.x() + a * std::cos(radians);
+        double y = center.y() + b * std::sin(radians);
+
+        points.append(QPointF(x, y));
+    }
+    roiPoly << points;
+}
+
 void ResizableEllipseItem::updateControlPoints() {
     controlPoints.clear();
     controlPoints.append(QPointF((ellipseRect.left() + ellipseRect.right()) / 2, ellipseRect.top()));    // 上
@@ -36,6 +64,7 @@ void ResizableEllipseItem::updateControlPoints() {
     //记录roi关键点
     roiPoly.clear();
     roiPoly << controlPoints[0] << controlPoints[1] << controlPoints[2] << controlPoints[3];
+    addFivePoints();    
     qDebug() << "roiPoly" << roiPoly << "####";
 }
 

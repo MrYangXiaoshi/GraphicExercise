@@ -10,6 +10,7 @@
 #include <QBrush>
 #include <QVector>
 #include <qdebug.h>
+#include <QtMath>
 
 class ResizableItem :
     public QGraphicsItem

@@ -17,6 +17,7 @@ protected:
 private:
     QRectF ellipseRect;
 
+    void addFivePoints();
     void updateControlPoints();
     void setEllipseRect(const QRectF& newRect);
     void rotateEllipse(const QPointF& currentPos); // Ðý×ªº¯Êý
