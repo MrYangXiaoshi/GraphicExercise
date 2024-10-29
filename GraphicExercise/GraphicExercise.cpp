@@ -226,26 +226,48 @@ void GraphicExercise::onButtonImageHandleClicked()
                 // 计算半径（使用左侧点到圆心的距离作为半径）
                 int radius = std::abs(polygonPoints[2].x - centerX);
                 int radius2 = std::abs(polygonPoints[6].x - centerX);
-
-                if (radius > radius2) {
-                    cv::circle(mask, center, radius, cv::Scalar(255), -1);
-                    cv::circle(mask, center, radius2, cv::Scalar(0), -1);
+                int temp;
+                if (radius2 > radius) {
+                    temp = radius;
+                    radius = radius2;
+                    radius2 = temp;
                 }
-                else {
-                    cv::circle(mask, center, radius2, cv::Scalar(255), -1);
-                    cv::circle(mask, center, radius, cv::Scalar(0), -1);
-                }
+                cv::circle(mask, center, radius, cv::Scalar(255), -1);
+                cv::circle(mask, center, radius2, cv::Scalar(0), -1);
             }
             else if (typeid(*child) == typeid(ResizableCicularArcItem)) {
-                // 使用 fillPoly 在掩码上绘制多边形
-                std::vector<std::vector<cv::Point>> contours = { polygonPoints };
-                cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
+                ResizableCicularArcItem* arcItem = dynamic_cast<ResizableCicularArcItem*>(child);
+                // 计算圆心坐标
+                QPointF centerf = arcItem->mapToParent(arcItem->getArcCenter());
+                qDebug() << "centerf:" << centerf;
+                
+                cv::Point center(centerf.x(), centerf.y());
+
+                // 计算半径（使用左侧点到圆心的距离作为半径）
+                int radius = (arcItem->getCircleRect().width() / 2);
+                int radius2 = (arcItem->getCircleRect2().width() / 2);
+                int temp;
+                if (radius2 > radius) {
+                    temp = radius;
+                    radius = radius2;
+                    radius2 = temp;
+                }
+                // 获取起始角度和跨度角度（单位：度）
+                int startAngle = -arcItem->getStartAngle();
+                int spanAngle = -arcItem->getSpanAngle();
+                // 调整起始角度到 0-360 度范围内
+                if (startAngle < 0) {
+                    startAngle += 360;
+                }
+
+                // 使用 OpenCV 函数绘制圆弧
+                cv::ellipse(mask, center, cv::Size(radius, radius), 0, startAngle, startAngle + spanAngle, cv::Scalar(255), -1);
+                cv::ellipse(mask, center, cv::Size(radius2, radius2), 0, startAngle, startAngle + spanAngle, cv::Scalar(0), -1);
             } else {//矩形、旋转矩形、多边形
                 // 使用 fillPoly 在掩码上绘制多边形
                 std::vector<std::vector<cv::Point>> contours = { polygonPoints };
                 cv::fillPoly(mask, contours, cv::Scalar(255)); // 填充白色
             }
-            
             handleMask();
         }
     }

@@ -33,6 +33,26 @@ void ResizableCicularArcItem::paint(QPainter* painter, const QStyleOptionGraphic
     ResizableItem::paint(painter, option, widget);
 }
 
+int ResizableCicularArcItem::getStartAngle()
+{
+    return startAngle;
+}
+
+int ResizableCicularArcItem::getSpanAngle()
+{
+    return spanAngle;
+}
+
+QRectF ResizableCicularArcItem::getCircleRect()
+{
+    return circleRect;
+}
+
+QRectF ResizableCicularArcItem::getCircleRect2()
+{
+    return circleRect2;
+}
+
 void ResizableCicularArcItem::updateControlPoints() {
     controlPoints.clear();
     controlPoints.append(getArcEndpoint(circleRect, startAngle));    // Æðµã0
@@ -145,6 +165,14 @@ double ResizableCicularArcItem::calculateSpanAngle(QPointF& point)
     }
 
     return angleInDegrees;
+}
+
+QPointF ResizableCicularArcItem::getArcCenter()
+{
+    int centerX = circleRect.x() + circleRect.width() / 2;
+    int centerY = circleRect.y() + circleRect.height() / 2;
+
+    return QPoint(centerX, centerY);
 }
 
 

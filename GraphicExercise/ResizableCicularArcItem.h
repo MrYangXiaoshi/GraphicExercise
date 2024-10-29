@@ -11,6 +11,11 @@ public:
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
+    int getStartAngle();
+    int getSpanAngle();
+    QRectF getCircleRect();
+    QRectF getCircleRect2();
+    QPointF getArcCenter();
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
 
