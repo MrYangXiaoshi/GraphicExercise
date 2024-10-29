@@ -6,9 +6,7 @@ class ResizableCicularArcItem :
 {
 public:
     ResizableCicularArcItem(qreal x, qreal y, qreal width, qreal height);
-
     QRectF boundingRect() const override;
-
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
     int getStartAngle();

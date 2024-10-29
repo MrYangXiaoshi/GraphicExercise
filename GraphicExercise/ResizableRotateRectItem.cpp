@@ -19,7 +19,6 @@ void ResizableRotateRectItem::paint(QPainter* painter, const QStyleOptionGraphic
     painter->setBrush(QColor(155, 155, 155, 0));
     //painter->drawRect(rect);
 
-
     polygon_user.clear();//必加（踩坑）
     polygon_user << controlPoints[7];
     for (int i = 0; i < 9; i++) {
@@ -29,7 +28,6 @@ void ResizableRotateRectItem::paint(QPainter* painter, const QStyleOptionGraphic
 
     //画出一条线
     painter->drawPolyline(polygon_user);
-
     ResizableItem::paint(painter, option, widget);
 }
 

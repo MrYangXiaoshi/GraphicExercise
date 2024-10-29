@@ -11,7 +11,6 @@ QRectF ResizableCircleItem::boundingRect() const
     return circleRect.adjusted(-400, -400, 400, 400);
 }
 
-
 void ResizableCircleItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     QPen pen(Qt::green);
     pen.setWidth(3);

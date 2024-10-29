@@ -15,8 +15,6 @@ void ResizableItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
 
 void ResizableItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-
-
     for (int i = 0; i < controlPoints.size(); ++i) {
         //按压在某个控制点且控制点显示的情况下
         if (QRectF(controlPoints[i].x() - 4, controlPoints[i].y() - 4, 8, 8).contains(event->pos())) {

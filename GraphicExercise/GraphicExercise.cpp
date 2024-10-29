@@ -81,17 +81,17 @@ GraphicExercise::~GraphicExercise()
 
 QImage GraphicExercise::MatToQImage(const Mat& mat)
 {
-    // 如果是灰度图像
+    // 灰度图像
     if (mat.type() == CV_8UC1)
     {
         return QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Grayscale8);
     }
-    // 如果是RGB图像
+    // RGB图像
     else if (mat.type() == CV_8UC3)
     {
         return QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888).rgbSwapped();
     }
-    // 如果是带有alpha通道的图像
+    // 带有alpha通道的图像
     else if (mat.type() == CV_8UC4)
     {
         return QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);
@@ -103,13 +103,11 @@ QImage GraphicExercise::MatToQImage(const Mat& mat)
 }
 
 void GraphicExercise::keepOneItem(){
-    // 获取场景中的所有图形项
     QList<QGraphicsItem*> items = scene.items();
 
-    // 遍历所有图形项，并删除所有不等于背景图项的其他项
     for (QGraphicsItem* item : items) {
         if (item != backgroundItem) {
-            scene.removeItem(item); // 从场景中移除
+            scene.removeItem(item); 
             delete item;            // 删除图形项，确保内存被正确释放
         }
     }
@@ -156,12 +154,10 @@ void GraphicExercise::onButtonImageHandleClicked()
         qDebug() << "123line:" << item;
         if (item != backgroundItem) {
             child = item;
-            
         }
     }
     try {
         if (backgroundItem && child) {
-
             // 获取子图形项在父图形项中的位置
             QPointF topLeft = child->mapToParent(child->boundingRect().topLeft());
             QPointF bottomRight = child->mapToParent(child->boundingRect().bottomRight());
@@ -237,7 +233,6 @@ void GraphicExercise::onButtonImageHandleClicked()
             }
             else if (typeid(*child) == typeid(ResizableCicularArcItem)) {
                 ResizableCicularArcItem* arcItem = dynamic_cast<ResizableCicularArcItem*>(child);
-                // 计算圆心坐标
                 QPointF centerf = arcItem->mapToParent(arcItem->getArcCenter());
                 qDebug() << "centerf:" << centerf;
                 
@@ -259,7 +254,6 @@ void GraphicExercise::onButtonImageHandleClicked()
                 if (startAngle < 0) {
                     startAngle += 360;
                 }
-
                 // 使用 OpenCV 函数绘制圆弧
                 cv::ellipse(mask, center, cv::Size(radius, radius), 0, startAngle, startAngle + spanAngle, cv::Scalar(255), -1);
                 cv::ellipse(mask, center, cv::Size(radius2, radius2), 0, startAngle, startAngle + spanAngle, cv::Scalar(0), -1);

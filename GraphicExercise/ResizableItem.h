@@ -29,14 +29,10 @@ protected:
     QVector<QPointF> controlPoints;//控制点列表
     int resizingIndex = -1;//当前按压控制点下标
 
-    
-
     //鼠标按压事件，判断按压哪个点
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
-
     //鼠标释放事件
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
-
     //鼠标双击改变控制点显示状态
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;
 };

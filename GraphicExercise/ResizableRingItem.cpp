@@ -12,16 +12,13 @@ QRectF ResizableRingItem::boundingRect() const
     return circleRect.adjusted(-400, -400, 400, 400);
 }
 
-
 void ResizableRingItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     QPen pen(Qt::green);
     pen.setWidth(3);
     painter->setPen(pen);
     painter->setBrush(QColor(155, 155, 155, 0));
     painter->drawEllipse(circleRect);
-
     painter->drawEllipse(circleRect2);
-
     //父类绘制控制点
     ResizableItem::paint(painter, option, widget);
 }

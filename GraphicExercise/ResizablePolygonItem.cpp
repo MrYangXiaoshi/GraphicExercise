@@ -9,7 +9,6 @@ ResizablePolygonItem::ResizablePolygonItem()
     setFlag(QGraphicsItem::ItemIsMovable);
     controlPoints.clear();
     unSetted = true;
-    
 }
 
 QRectF ResizablePolygonItem::boundingRect() const
@@ -23,8 +22,6 @@ void ResizablePolygonItem::paint(QPainter* painter, const QStyleOptionGraphicsIt
     pen.setWidth(3);
     painter->setPen(pen);
     painter->setBrush(QColor(155, 155, 155, 0));
-    //polygon << QPointF(0, 0) << QPointF(100, 0) << QPointF(100, 100) << QPointF(0, 100);
-    //updateControlPoints();
 
     polygon.clear();
     for (const auto& point : controlPoints) {
@@ -95,6 +92,5 @@ void ResizablePolygonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 void ResizablePolygonItem::updateControlPoints()
 {
     controlPoints.clear();
-           
     qDebug() << "ResizablePolygonItem::updateControlPoints()::controlPoints.clear()";
 }

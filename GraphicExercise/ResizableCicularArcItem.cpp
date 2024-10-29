@@ -156,7 +156,6 @@ double ResizableCicularArcItem::calculateSpanAngle(QPointF& point)
 
     // 将弧度转换为度
     double angleInDegrees = angleInRadians * 180.0 / M_PI;
-
     angleInDegrees = -angleInDegrees - startAngle;
 
     // 确保角度在 0 到 360 度之间
@@ -174,7 +173,6 @@ QPointF ResizableCicularArcItem::getArcCenter()
 
     return QPoint(centerX, centerY);
 }
-
 
 void ResizableCicularArcItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
     if (resizing && revealPoint) {
